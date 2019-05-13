@@ -11,12 +11,11 @@ trials_base_list = []
 # all possible variations
 modi = ['AD', 'AN', 'PD', 'PN']
 
-#create basic list
-for i in range (TRIALS):
-    trials_base_list.append(modi[i%len(modi)])
+# create basic list
+for i in range(TRIALS):
+    trials_base_list.append(modi[i % len(modi)])
 
-
-for i in range (PARTICIPANTS):
+for i in range(PARTICIPANTS):
     # convert participant number to 1-based index
     particip_num = i + 1
 
@@ -40,3 +39,9 @@ for i in range (PARTICIPANTS):
 
     # close file
     file.close()
+
+    # create CSV file for particpiant
+    csv_file = open("Participant_" + str(particip_num) + "_log.csv", "a")
+    csv_file.write("participant_id, stimulus,mental_complexity, distraction," +
+                "pressed_key, correct_key_pressed, reaction_time, timestamp")
+    csv_file.close()
