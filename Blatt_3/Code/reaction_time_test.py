@@ -102,7 +102,12 @@ class Experiment(QWidget):
     def show_despription(self):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
-        self.info_text = QLabel("Willkommen drücken Sie A für attentive oder P für pre-attentive")
+        self.info_text = QLabel(
+            " Im folgenden Experiment siehst du Bildpaare. Diese können optisch unterschieden werden. \n"
+            " Als unser Teilnehmer sollst du so schnell wie möglich die Seite mit dem roten Quadrat oder \n"
+            " den ungeraden auswählen.  Mit den Tasten ‚D‘ und ‚K‘ wählst du dann die linke oder rechte \n"
+            " Seite aus. Die Bilder werden dann nacheinander angezeigt. Wie bei jedem Experiment kannst du \n"
+            " als Proband nichts falsch machen. ")
         self.info_text.setAlignment(Qt.AlignCenter)
         self.start_button = QPushButton("Experiment starten")
         self.start_button.clicked.connect(self.start_experiment)
@@ -124,6 +129,10 @@ class Experiment(QWidget):
 
     # loads the Ui for the Experiment
     def load_experiment_ui(self):
+        self.text_trial_number = QLabel(str(self.trial_number))
+        self.text_trial_number.setAlignment(Qt.AlignCenter)
+        self.text_trial_number.setStyleSheet('color: black')
+        self.layout.addWidget(self.text_trial_number)
         self.setStyleSheet("background-color:white;")
         self.image_right = QLabel(self)
         self.image_left = QLabel(self)
@@ -136,6 +145,8 @@ class Experiment(QWidget):
         self.distraction_timer = QTimer()
         self.distraction_timer.setInterval(200)
         self.distraction_timer.timeout.connect(self.change_background)
+        sleep(self.waiting_time)
+        
 
     # loads the experiment data and sets up the task
     def load_experiment_data(self):
@@ -171,16 +182,17 @@ class Experiment(QWidget):
 
         pixmap = QtGui.QPixmap(url_right)
         self.image_right.setPixmap(pixmap)
+        self.text_trial_number.setText(str(self.trial_number))
 
-    # sets the displayed image for preattentive task
+    # sets the displayed image for preattentive task rot
     def show_pre_attentive_images(self):
         variants = ['P-1', 'P-2']
         if IMAGE_SEQUENCE[self.trial_number_pre_attentive] == 1:
-            url_left = 'Assets/' + variants[0] + '.jpg'
-            url_right = 'Assets/' + variants[1] + '.jpg'
-        else:
             url_left = 'Assets/' + variants[1] + '.jpg'
             url_right = 'Assets/' + variants[0] + '.jpg'
+        else:
+            url_left = 'Assets/' + variants[0] + '.jpg'
+            url_right = 'Assets/' + variants[1] + '.jpg'
         self.trial_number_pre_attentive += 1
 
         pixmap = QtGui.QPixmap(url_left)
@@ -188,8 +200,9 @@ class Experiment(QWidget):
 
         pixmap = QtGui.QPixmap(url_right)
         self.image_right.setPixmap(pixmap)
+        self.text_trial_number.setText(str(self.trial_number))
 
-    # changes the background for distraction
+    # changes the background for distraction ungerade
     def change_background(self):
         colors = ['black', 'red', 'green', 'blue', 'orange', 'grey']
         self.setStyleSheet("background-color:" + random.choice(colors) + ";")
@@ -197,24 +210,34 @@ class Experiment(QWidget):
     # handels the user input
     def keyPressEvent(self, event):
         if self.started:
-            # pre-attentive
-            if event.key() == Qt.Key_R and not self.wait:
+            # gesuchtes Item links
+            if event.key() == Qt.Key_D and not self.wait:
                 self.reaction_time = time.time() - self.reaction_time
                 timestamp = time.time()
-                self.wait_for_next_task('R', timestamp)
-            # attentive
-            elif event.key() == Qt.Key_U and not self.wait:
+                self.wait_for_next_task('D', timestamp)
+            # gesuchtes Item rechts
+            elif event.key() == Qt.Key_K and not self.wait:
                 self.reaction_time = time.time() - self.reaction_time
                 timestamp = time.time()
-                self.wait_for_next_task('U', timestamp)
+                self.wait_for_next_task('K', timestamp)
 
     # creates the log entry
     def create_log_entry(self, pressed_number, timestamp):
-        if (pressed_number == 'R' and self.mental_complexity == 'P') or (
-                pressed_number == 'U' and self.mental_complexity == 'A'):
-            correct_key_pressed = True
+        if self.mental_complexity == 'P':
+            if (IMAGE_SEQUENCE[self.trial_number_pre_attentive - 1] == 1 and pressed_number == 'D') or (
+                    IMAGE_SEQUENCE[self.trial_number_pre_attentive - 1] == 2 and pressed_number == 'K'):
+                correct_key_pressed = True
+            else:
+                correct_key_pressed = False
+        elif self.mental_complexity == 'A':
+            if (IMAGE_SEQUENCE[self.trial_number_attentive - 1] == 1 and pressed_number == 'D') or (
+                    IMAGE_SEQUENCE[self.trial_number_attentive - 1] == 2 and pressed_number == 'K'):
+                correct_key_pressed = True
+            else:
+                correct_key_pressed = False
         else:
             correct_key_pressed = False
+
         self.logger.write_row(self.trials[self.trial_number], self.mental_complexity, self.distraction, pressed_number,
                               correct_key_pressed, self.reaction_time, timestamp)
 
