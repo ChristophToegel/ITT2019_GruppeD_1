@@ -3,11 +3,15 @@ import os
 import sys
 import random
 import datetime
+import time
 from time import sleep
 from PyQt5.QtWidgets import (QApplication, QLabel, QPushButton,
                              QVBoxLayout, QWidget, QHBoxLayout)
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5 import QtGui
+
+IMAGE_SEQUENCE = [1, 2, 1, 1, 2, 1, 1, 2, 1, 2, 2, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 2, 1, 1, 1,
+                  2, 2, 1, 2, 2, 1, 1]
 
 
 # https://docs.python.org/3/library/csv.html
@@ -19,7 +23,7 @@ def read_experiment_setup(filename):
     text = file.read()
     participant_id = None
     trials = None
-    time = None
+    time_between_signals = None
     for textline in text.splitlines():
         title, description = textline.split(':')
         if title == 'PARTICIPANT':
@@ -27,16 +31,18 @@ def read_experiment_setup(filename):
         elif title == 'TRIALS':
             trials = description.replace(' ', '').split(',')
         elif title == 'TIME_BETWEEN_SIGNALS_MS':
-            time = int(description) / 1000
+            time_between_signals = int(description) / 1000
         else:
-            print('Unbekannte Eingebe!')
-    return participant_id, trials, time
+            print('Unbekannte Eingabe!' + textline)
+    return participant_id, trials, time_between_signals
 
 
+# handels the Logging
 class LogCsv():
 
+    # inits csv colums
     def __init__(self, participant_id, time):
-        self.filename = 'reaction_time_results.csv'
+        self.filename = 'Participant_' + participant_id + '_log.csv'
         self.participant_id = participant_id
         self.time = time
         self.fieldnames = ['participant_id', 'stimulus', 'mental_complexity', 'distraction', 'pressed_key',
@@ -45,12 +51,14 @@ class LogCsv():
         self.check_file()
         self.open_file()
 
+    # checks if file exists
     def check_file(self):
-        if os.path.isfile('reaction_time_results.csv'):
+        if os.path.isfile(self.filename):
             self.write_header = False
         else:
             self.write_header = True
 
+    # opens the file and wirites the header
     def open_file(self):
         with open(self.filename, 'a+', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
@@ -58,12 +66,13 @@ class LogCsv():
                 writer.writeheader()
             self.close_file(csvfile)
 
+    # closes the file
     def close_file(self, file):
         file.close()
 
+    # adds a log entry
     def write_row(self, stimulus, mental_complexity, distraction, pressed_key, correct_key_pressed, reaction_time,
                   timestamp):
-        # entweder vorrübergehend als dict speichern oder immer file öffnen?!
         with open(self.filename, 'a+', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
             writer.writerow(
@@ -76,16 +85,20 @@ class LogCsv():
 
 class Experiment(QWidget):
 
-    def __init__(self, trials, time, participant_id):
+    # inits the variables
+    def __init__(self, trials, time_between_signals, participant_id):
         QWidget.__init__(self)
         self.trials = trials
         self.started = False
         self.wait = False
         self.trial_number = 0
-        self.waiting_time = time
+        self.trial_number_pre_attentive = 0
+        self.trial_number_attentive = 0
+        self.waiting_time = time_between_signals
         self.show_despription()
         self.logger = LogCsv(participant_id, time)
 
+    # shows the description text
     def show_despription(self):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
@@ -96,10 +109,12 @@ class Experiment(QWidget):
         self.layout.addWidget(self.info_text)
         self.layout.addWidget(self.start_button)
 
+    # hides the despription text
     def hide_description(self):
         self.start_button.hide()
         self.info_text.hide()
 
+    # user presses the start button
     def start_experiment(self):
         self.hide_description()
         self.started = True
@@ -107,23 +122,22 @@ class Experiment(QWidget):
         self.load_experiment_ui()
         self.load_experiment_data()
 
+    # loads the Ui for the Experiment
     def load_experiment_ui(self):
-        self.test = QLabel("Title")
-        self.test.setAlignment(Qt.AlignCenter)
-        self.layout.addWidget(self.test)
-
+        self.setStyleSheet("background-color:white;")
         self.image_right = QLabel(self)
         self.image_left = QLabel(self)
 
         hbox = QHBoxLayout()
-        hbox.addWidget(self.image_right)
         hbox.addWidget(self.image_left)
+        hbox.addWidget(self.image_right)
         self.layout.addLayout(hbox)
 
         self.distraction_timer = QTimer()
-        self.distraction_timer.setInterval(500)
+        self.distraction_timer.setInterval(200)
         self.distraction_timer.timeout.connect(self.change_background)
 
+    # loads the experiment data and sets up the task
     def load_experiment_data(self):
         print('task:' + str(self.trial_number))
         trial = self.trials[self.trial_number]
@@ -134,60 +148,83 @@ class Experiment(QWidget):
         else:
             self.distraction = False
             self.distraction_timer.stop()
+
         if self.mental_complexity == "A":
             self.show_attentive_images()
+            self.reaction_time = time.time()
         elif self.mental_complexity == "P":
             self.show_pre_attentive_images()
-        # print('Experinent mit: '+self.mental_complexity+' distraction:'+str(self.distraction))
+            self.reaction_time = time.time()
 
+    # sets the displayed image for attentive task
     def show_attentive_images(self):
-        numbers = ['1', '2', '6', '7']
-        number = random.choice(numbers)
-        url_left = 'Assets/A-' + number + '-Links.jpg'
+        variants = ['A-1', 'A-2']
+        if IMAGE_SEQUENCE[self.trial_number_attentive] == 1:
+            url_left = 'Assets/' + variants[0] + '.jpg'
+            url_right = 'Assets/' + variants[1] + '.jpg'
+        else:
+            url_left = 'Assets/' + variants[1] + '.jpg'
+            url_right = 'Assets/' + variants[0] + '.jpg'
+        self.trial_number_attentive += 1
         pixmap = QtGui.QPixmap(url_left)
         self.image_left.setPixmap(pixmap)
-        url_right = 'Assets/A-' + number + '-Rechts.jpg'
+
         pixmap = QtGui.QPixmap(url_right)
         self.image_right.setPixmap(pixmap)
-        # print('Images:A' + url_right + 'und' + url_left)
 
+    # sets the displayed image for preattentive task
     def show_pre_attentive_images(self):
-        numbers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-        number = random.choice(numbers)
-        url_left = 'Assets/P-' + number + '-Links.jpg'
+        variants = ['P-1', 'P-2']
+        if IMAGE_SEQUENCE[self.trial_number_pre_attentive] == 1:
+            url_left = 'Assets/' + variants[0] + '.jpg'
+            url_right = 'Assets/' + variants[1] + '.jpg'
+        else:
+            url_left = 'Assets/' + variants[1] + '.jpg'
+            url_right = 'Assets/' + variants[0] + '.jpg'
+        self.trial_number_pre_attentive += 1
+
         pixmap = QtGui.QPixmap(url_left)
         self.image_left.setPixmap(pixmap)
-        url_right = 'Assets/P-' + number + '-Rechts.jpg'
+
         pixmap = QtGui.QPixmap(url_right)
         self.image_right.setPixmap(pixmap)
-        # print('ImagesPA:'+url_right+'und'+url_left)
 
+    # changes the background for distraction
     def change_background(self):
-        colors = ['black', 'red', 'green', 'blue']
+        colors = ['black', 'red', 'green', 'blue', 'orange', 'grey']
         self.setStyleSheet("background-color:" + random.choice(colors) + ";")
 
+    # handels the user input
     def keyPressEvent(self, event):
         if self.started:
-            if event.key() == Qt.Key_A and not self.wait:
-                timestamp = datetime.datetime.now().timestamp()
-                self.wait_for_next_task('A', timestamp)
-            elif event.key() == Qt.Key_P and not self.wait:
-                timestamp = datetime.datetime.now().timestamp()
-                self.wait_for_next_task('P', timestamp)
+            # pre-attentive
+            if event.key() == Qt.Key_R and not self.wait:
+                self.reaction_time = time.time() - self.reaction_time
+                timestamp = time.time()
+                self.wait_for_next_task('R', timestamp)
+            # attentive
+            elif event.key() == Qt.Key_U and not self.wait:
+                self.reaction_time = time.time() - self.reaction_time
+                timestamp = time.time()
+                self.wait_for_next_task('U', timestamp)
 
-    def wait_for_next_task(self, pressed_number, timestamp):
-        self.wait = True
-        # logging
-        if self.mental_complexity == pressed_number:
+    # creates the log entry
+    def create_log_entry(self, pressed_number, timestamp):
+        if (pressed_number == 'R' and self.mental_complexity == 'P') or (
+                pressed_number == 'U' and self.mental_complexity == 'A'):
             correct_key_pressed = True
         else:
             correct_key_pressed = False
-        # rection time messen anstatt
         self.logger.write_row(self.trials[self.trial_number], self.mental_complexity, self.distraction, pressed_number,
-                              correct_key_pressed, 'reactionTime', timestamp)
-        self.setStyleSheet("background-color:white;")
+                              correct_key_pressed, self.reaction_time, timestamp)
 
+    # waits and starts new task
+    def wait_for_next_task(self, pressed_number, timestamp):
+        self.wait = True
+        self.create_log_entry(pressed_number, timestamp)
+        self.setStyleSheet("background-color:white;")
         sleep(self.waiting_time)
+
         if self.trial_number + 1 != len(self.trials):
             self.trial_number += 1
             self.wait = False
@@ -198,10 +235,9 @@ class Experiment(QWidget):
 
 if __name__ == "__main__":
     file = sys.argv[1]
-    participant_id, trials, time = read_experiment_setup(file)
+    participant_id, trials, time_between_signals = read_experiment_setup(file)
     app = QApplication(sys.argv)
-
-    widget = Experiment(trials, time, participant_id)
+    widget = Experiment(trials, time_between_signals, participant_id)
     widget.resize(600, 400)
     widget.show()
 

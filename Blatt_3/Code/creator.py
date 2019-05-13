@@ -30,7 +30,7 @@ for i in range(PARTICIPANTS):
     # add lines to file
     line_1 = f"PARTICIPANT: {str(particip_num)}\n"
     line_2 = f"TRIALS: {trials_string}\n"
-    line_3 = f"TIME_BETWEEN_SIGNALS: {str(TIME_BETWEEN_SIGNALS)}\n"
+    line_3 = f"TIME_BETWEEN_SIGNALS_MS: {str(TIME_BETWEEN_SIGNALS)}\n"
 
     # add lines
     file.write(line_1)

@@ -1,9 +1,0 @@
-participant_id,stimulus,mental_complexity,distraction,pressed_key,correct_key_pressed,reaction_time,timestamp
-1,AD,A,True,A,True,reactionTime,1557745323.518138
-1,AN,A,False,P,False,reactionTime,1557745326.564008
-1,PD,P,True,A,False,reactionTime,1557745329.101859
-1,PN,P,False,P,True,reactionTime,1557745331.852983
-1,AD,A,True,A,True,reactionTime,1557745334.465465
-1,AN,A,False,P,False,reactionTime,1557745337.92607
-1,PD,P,True,A,False,reactionTime,1557745341.423281
-1,PN,P,False,P,True,reactionTime,1557745346.195692
