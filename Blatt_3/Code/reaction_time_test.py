@@ -100,7 +100,7 @@ class Experiment(QWidget):
         self.info_text = QLabel(
             " Im folgenden Experiment siehst du einzelne Bilder. Diese können optisch unterschieden werden.\n"
             " Als unser Teilnehmer sollst du so schnell wie die Tasten „R“ oder „U“ abhängig vom gezeigten Bild\n"
-            " drücken. Siehst du ein rotes Quadrat oder eine ungerade Zahl, so drückst du „R“, siehst du ein blaues\n"
+            " drücken. Siehst du ein rotes Quadrat oder eine gerade Zahl, so drückst du „R“, siehst du ein blaues\n"
             " Quadrat oder eine ungerade Zahl, drücke die „U“ Taste. Die Bilder werden dann nacheinander angezeigt.\n"
             " Versuche deine Arme während des Experiments auf dem Tische liegen zu lassen und nur mit den Fingern \n"
             " zu arbeiten. Wie bei jedem Experiment kannst du als Proband aber nichts falsch machen.\n"
