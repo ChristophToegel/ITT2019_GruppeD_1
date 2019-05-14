@@ -102,15 +102,20 @@ class Experiment(QWidget):
     def show_despription(self):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
+        self.setStyleSheet("background-color:white;")
         self.info_text = QLabel(
-            " Im folgenden Experiment siehst du Bildpaare. Diese können optisch unterschieden werden. \n"
-            " Als unser Teilnehmer sollst du so schnell wie möglich die Seite mit dem roten Quadrat oder \n"
-            " den ungeraden auswählen.  Mit den Tasten ‚D‘ und ‚K‘ wählst du dann die linke oder rechte \n"
-            " Seite aus. Die Bilder werden dann nacheinander angezeigt. Wie bei jedem Experiment kannst du \n"
-            " als Proband nichts falsch machen. ")
+            " Im folgenden Experiment siehst du Bildpaare. Diese können optisch unterschieden werden.\n"
+            " Als unser Teilnehmer sollst du so schnell wie möglich die Seite mit dem roten Quadrat \n"
+            " oder den ungeraden auswählen.  Mit den Tasten ‚D‘ und ‚K‘ wählst du dann die linke oder\n"
+            " rechte Seite aus. Die Bilder werden dann nacheinander angezeigt. Versuche deine Arme \n"
+            " während des Experiments auf dem Tische liegen zu lassen und nur mit den Fingern zu arbeiten.\n"
+            " Wie bei jedem Experiment kannst du als Proband aber nichts falsch machen. \n"
+            "Bitte nimm nun deine Position ein, der Versuchsleiter wird das Programm starten.")
         self.info_text.setAlignment(Qt.AlignCenter)
+        self.info_text.setStyleSheet("color:black;")
         self.start_button = QPushButton("Experiment starten")
         self.start_button.clicked.connect(self.start_experiment)
+        self.start_button.setStyleSheet("background-color:black;")
         self.layout.addWidget(self.info_text)
         self.layout.addWidget(self.start_button)
 
@@ -133,7 +138,7 @@ class Experiment(QWidget):
         self.text_trial_number.setAlignment(Qt.AlignCenter)
         self.text_trial_number.setStyleSheet('color: black')
         self.layout.addWidget(self.text_trial_number)
-        self.setStyleSheet("background-color:white;")
+        #self.setStyleSheet("background-color:white;")
         self.image_right = QLabel(self)
         self.image_left = QLabel(self)
 
