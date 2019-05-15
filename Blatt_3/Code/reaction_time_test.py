@@ -104,14 +104,13 @@ class Experiment(QWidget):
             " Als unser Teilnehmer sollst du so schnell wie die Tasten „R“ oder „U“ abhängig vom gezeigten Bild\n"
             " drücken. Siehst du ein rotes Quadrat oder eine gerade Zahl, so drückst du „R“, siehst du ein blaues\n"
             " Quadrat oder eine ungerade Zahl, drücke die „U“ Taste. Die Bilder werden dann nacheinander angezeigt.\n"
-            " Versuche deine Arme während des Experiments auf dem Tische liegen zu lassen und nur mit den Fingern \n"
+            " Versuche deine Arme während des Experiments auf dem Tisch liegen zu lassen und nur mit den Fingern \n"
             " zu arbeiten. Wie bei jedem Experiment kannst du als Proband aber nichts falsch machen.\n"
             " Bitte nimm nun deine Position ein, der Versuchsleiter wird das Programm starten. ")
         self.info_text.setAlignment(Qt.AlignCenter)
         self.info_text.setStyleSheet("color:black;")
         self.start_button = QPushButton("Experiment starten")
         self.start_button.clicked.connect(self.start_experiment)
-        # self.start_button.setStyleSheet("background-color:black;")
         self.layout.addWidget(self.info_text)
         self.layout.addWidget(self.start_button)
 
@@ -173,7 +172,6 @@ class Experiment(QWidget):
         else:
             self.correct_key = 'U'
         url = 'Assets/' + self.variant + '.png'
-
         pixmap = QtGui.QPixmap(url)
         self.image.setPixmap(pixmap)
         self.image.show()
@@ -188,7 +186,6 @@ class Experiment(QWidget):
         else:
             self.correct_key = 'U'
         url = 'Assets/' + self.variant + '.jpg'
-
         pixmap = QtGui.QPixmap(url)
         self.image.setPixmap(pixmap)
         self.image.show()
@@ -202,17 +199,15 @@ class Experiment(QWidget):
     # handels the user input
     def keyPressEvent(self, event):
         if self.started:
-            # rot und gerage
-            print(self.wait)
+            # red and odd
             if event.key() == Qt.Key_R and not self.wait:
                 self.wait = True
                 self.image.hide()
                 self.reaction_time = time.time() - self.reaction_time
                 timestamp = time.time()
                 self.wait_for_next_task('R', timestamp)
-            # blau und ungerade
+            # blue and even
             elif event.key() == Qt.Key_U and not self.wait:
-                # print(event.key() == Qt.Key_U and not self.wait)
                 self.wait = True
                 self.image.hide()
                 self.reaction_time = time.time() - self.reaction_time
