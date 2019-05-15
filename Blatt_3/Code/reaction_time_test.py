@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import (QApplication, QLabel, QPushButton,
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5 import QtGui
 
+
 # For the Task Informations use creator.py (creates the Participant_X.txt)
 # Sources
 # https://docs.python.org/3/library/csv.html
@@ -79,6 +80,7 @@ class LogCsv():
                  'pressed_key': pressed_key, 'correct_key_pressed': correct_key_pressed, 'reaction_time': reaction_time,
                  'timestamp': timestamp})
         self.close_file(csvfile)
+
 
 # main Class for the Experiment (implemented by Julian)
 class Experiment(QWidget):
