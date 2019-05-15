@@ -173,7 +173,6 @@ class Experiment(QWidget):
         else:
             self.correct_key = 'U'
         url = 'Assets/' + self.variant + '.png'
-
         pixmap = QtGui.QPixmap(url)
         self.image.setPixmap(pixmap)
         self.image.show()
@@ -188,7 +187,6 @@ class Experiment(QWidget):
         else:
             self.correct_key = 'U'
         url = 'Assets/' + self.variant + '.jpg'
-
         pixmap = QtGui.QPixmap(url)
         self.image.setPixmap(pixmap)
         self.image.show()
@@ -202,17 +200,15 @@ class Experiment(QWidget):
     # handels the user input
     def keyPressEvent(self, event):
         if self.started:
-            # rot und gerage
-            print(self.wait)
+            # red and odd
             if event.key() == Qt.Key_R and not self.wait:
                 self.wait = True
                 self.image.hide()
                 self.reaction_time = time.time() - self.reaction_time
                 timestamp = time.time()
                 self.wait_for_next_task('R', timestamp)
-            # blau und ungerade
+            # blue and even
             elif event.key() == Qt.Key_U and not self.wait:
-                # print(event.key() == Qt.Key_U and not self.wait)
                 self.wait = True
                 self.image.hide()
                 self.reaction_time = time.time() - self.reaction_time
