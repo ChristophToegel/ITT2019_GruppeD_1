@@ -111,7 +111,6 @@ class Experiment(QWidget):
         self.info_text.setStyleSheet("color:black;")
         self.start_button = QPushButton("Experiment starten")
         self.start_button.clicked.connect(self.start_experiment)
-        # self.start_button.setStyleSheet("background-color:black;")
         self.layout.addWidget(self.info_text)
         self.layout.addWidget(self.start_button)
 
