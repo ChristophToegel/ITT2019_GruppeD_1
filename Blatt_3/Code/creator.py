@@ -1,5 +1,6 @@
 import numpy
 
+# Creates the txt and csv files (implemented by Christoph)
 # constants
 PARTICIPANTS = 4
 TIME_BETWEEN_SIGNALS = 1000
@@ -43,5 +44,5 @@ for i in range(PARTICIPANTS):
     # create CSV file for particpiant
     csv_file = open("Participant_" + str(particip_num) + "_log.csv", "a")
     csv_file.write("participant_id, stimulus,mental_complexity, distraction," +
-                "pressed_key, correct_key_pressed, reaction_time, timestamp")
+                   "pressed_key, correct_key_pressed, reaction_time, timestamp")
     csv_file.close()

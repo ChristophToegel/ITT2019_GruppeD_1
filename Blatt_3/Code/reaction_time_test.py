@@ -9,11 +9,13 @@ from PyQt5.QtWidgets import (QApplication, QLabel, QPushButton,
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5 import QtGui
 
-
+# For the Task Informations use creator.py (creates the Participant_X.txt)
+# Sources
 # https://docs.python.org/3/library/csv.html
 # https://www.qt.io/qt-for-python
 # https://stackoverflow.com/questions/49971584/updating-pyqt5-gui-with-live-data
 
+# reads and returns the data from the file (implemented by Christoph)
 def read_experiment_setup(filename):
     file = open(filename, 'r')
     text = file.read()
@@ -27,13 +29,13 @@ def read_experiment_setup(filename):
         elif title == 'TRIALS':
             trials = description.replace(' ', '').split(',')
         elif title == 'TIME_BETWEEN_SIGNALS_MS':
-            time_between_signals = int(description) / 1000
+            time_between_signals = int(description)
         else:
             print('Unbekannte Eingabe!' + textline)
     return participant_id, trials, time_between_signals
 
 
-# handels the Logging
+# handels the Logging (implemented by Christoph)
 class LogCsv():
 
     # inits csv colums
@@ -78,7 +80,7 @@ class LogCsv():
                  'timestamp': timestamp})
         self.close_file(csvfile)
 
-
+# main Class for the Experiment (implemented by Julian)
 class Experiment(QWidget):
 
     # inits the variables
@@ -109,7 +111,7 @@ class Experiment(QWidget):
         self.info_text.setStyleSheet("color:black;")
         self.start_button = QPushButton("Experiment starten")
         self.start_button.clicked.connect(self.start_experiment)
-        self.start_button.setStyleSheet("background-color:black;")
+        # self.start_button.setStyleSheet("background-color:black;")
         self.layout.addWidget(self.info_text)
         self.layout.addWidget(self.start_button)
 
@@ -135,11 +137,13 @@ class Experiment(QWidget):
         self.image = QLabel(self)
         self.image.setAlignment(Qt.AlignCenter)
         self.layout.addWidget(self.image)
-
         self.distraction_timer = QTimer()
         self.distraction_timer.setInterval(200)
         self.distraction_timer.timeout.connect(self.change_background)
-        sleep(self.waiting_time)
+        sleep(self.waiting_time / 1000)
+        self.next_task_timer = QTimer(self)
+        self.next_task_timer.setSingleShot(True)
+        self.next_task_timer.timeout.connect(self.next_task)
 
     # loads the experiment data and sets up the task
     def load_experiment_data(self):
@@ -152,7 +156,6 @@ class Experiment(QWidget):
         else:
             self.distraction = False
             self.distraction_timer.stop()
-
         if self.mental_complexity == "A":
             self.show_attentive_images()
             self.reaction_time = time.time()
@@ -200,13 +203,17 @@ class Experiment(QWidget):
     def keyPressEvent(self, event):
         if self.started:
             # rot und gerage
+            print(self.wait)
             if event.key() == Qt.Key_R and not self.wait:
+                self.wait = True
                 self.image.hide()
                 self.reaction_time = time.time() - self.reaction_time
                 timestamp = time.time()
                 self.wait_for_next_task('R', timestamp)
             # blau und ungerade
             elif event.key() == Qt.Key_U and not self.wait:
+                # print(event.key() == Qt.Key_U and not self.wait)
+                self.wait = True
                 self.image.hide()
                 self.reaction_time = time.time() - self.reaction_time
                 timestamp = time.time()
@@ -223,11 +230,12 @@ class Experiment(QWidget):
 
     # waits and starts new task
     def wait_for_next_task(self, pressed_number, timestamp):
-        self.wait = True
         self.create_log_entry(pressed_number, timestamp)
         self.setStyleSheet("background-color:white;")
-        sleep(self.waiting_time)
+        self.next_task_timer.start(self.waiting_time)
 
+    # starts a new task
+    def next_task(self):
         if self.trial_number + 1 != len(self.trials):
             self.trial_number += 1
             self.wait = False
@@ -243,5 +251,4 @@ if __name__ == "__main__":
     widget = Experiment(trials, time_between_signals, participant_id)
     widget.resize(600, 400)
     widget.show()
-
     sys.exit(app.exec_())
