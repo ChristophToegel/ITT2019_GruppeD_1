@@ -2,16 +2,12 @@ import csv
 import os
 import sys
 import random
-import datetime
 import time
 from time import sleep
 from PyQt5.QtWidgets import (QApplication, QLabel, QPushButton,
                              QVBoxLayout, QWidget, QHBoxLayout)
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5 import QtGui
-
-IMAGE_SEQUENCE = [1, 2, 1, 1, 2, 1, 1, 2, 1, 2, 2, 2, 1, 1, 2, 2, 1, 2, 1, 1, 2, 1, 2, 2, 2, 1, 2, 1, 2, 2, 1, 1, 1,
-                  2, 2, 1, 2, 2, 1, 1]
 
 
 # https://docs.python.org/3/library/csv.html
@@ -92,8 +88,6 @@ class Experiment(QWidget):
         self.started = False
         self.wait = False
         self.trial_number = 0
-        self.trial_number_pre_attentive = 0
-        self.trial_number_attentive = 0
         self.waiting_time = time_between_signals
         self.show_despription()
         self.logger = LogCsv(participant_id, time)
@@ -104,13 +98,13 @@ class Experiment(QWidget):
         self.setLayout(self.layout)
         self.setStyleSheet("background-color:white;")
         self.info_text = QLabel(
-            " Im folgenden Experiment siehst du Bildpaare. Diese können optisch unterschieden werden.\n"
-            " Als unser Teilnehmer sollst du so schnell wie möglich die Seite mit dem roten Quadrat \n"
-            " oder den ungeraden auswählen.  Mit den Tasten ‚D‘ und ‚K‘ wählst du dann die linke oder\n"
-            " rechte Seite aus. Die Bilder werden dann nacheinander angezeigt. Versuche deine Arme \n"
-            " während des Experiments auf dem Tische liegen zu lassen und nur mit den Fingern zu arbeiten.\n"
-            " Wie bei jedem Experiment kannst du als Proband aber nichts falsch machen. \n"
-            "Bitte nimm nun deine Position ein, der Versuchsleiter wird das Programm starten.")
+            " Im folgenden Experiment siehst du einzelne Bilder. Diese können optisch unterschieden werden.\n"
+            " Als unser Teilnehmer sollst du so schnell wie die Tasten „R“ oder „U“ abhängig vom gezeigten Bild\n"
+            " drücken. Siehst du ein rotes Quadrat oder eine gerade Zahl, so drückst du „R“, siehst du ein blaues\n"
+            " Quadrat oder eine ungerade Zahl, drücke die „U“ Taste. Die Bilder werden dann nacheinander angezeigt.\n"
+            " Versuche deine Arme während des Experiments auf dem Tische liegen zu lassen und nur mit den Fingern \n"
+            " zu arbeiten. Wie bei jedem Experiment kannst du als Proband aber nichts falsch machen.\n"
+            " Bitte nimm nun deine Position ein, der Versuchsleiter wird das Programm starten. ")
         self.info_text.setAlignment(Qt.AlignCenter)
         self.info_text.setStyleSheet("color:black;")
         self.start_button = QPushButton("Experiment starten")
@@ -138,20 +132,14 @@ class Experiment(QWidget):
         self.text_trial_number.setAlignment(Qt.AlignCenter)
         self.text_trial_number.setStyleSheet('color: black')
         self.layout.addWidget(self.text_trial_number)
-        #self.setStyleSheet("background-color:white;")
-        self.image_right = QLabel(self)
-        self.image_left = QLabel(self)
-
-        hbox = QHBoxLayout()
-        hbox.addWidget(self.image_left)
-        hbox.addWidget(self.image_right)
-        self.layout.addLayout(hbox)
+        self.image = QLabel(self)
+        self.image.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.image)
 
         self.distraction_timer = QTimer()
         self.distraction_timer.setInterval(200)
         self.distraction_timer.timeout.connect(self.change_background)
         sleep(self.waiting_time)
-        
 
     # loads the experiment data and sets up the task
     def load_experiment_data(self):
@@ -174,37 +162,33 @@ class Experiment(QWidget):
 
     # sets the displayed image for attentive task
     def show_attentive_images(self):
-        variants = ['A-1', 'A-2']
-        if IMAGE_SEQUENCE[self.trial_number_attentive] == 1:
-            url_left = 'Assets/' + variants[0] + '.jpg'
-            url_right = 'Assets/' + variants[1] + '.jpg'
+        variants = ['A_Gerade', 'A_Gerade2', 'A_Gerade4', 'A_Gerade6', 'A_Gerade8', 'A_Ungerade1', 'A_Ungerade3',
+                    'A_Ungerade5', 'A_Ungerade7']
+        self.variant = random.choice(variants)
+        if 'Gerade' in self.variant.split('_')[1]:
+            self.correct_key = 'R'
         else:
-            url_left = 'Assets/' + variants[1] + '.jpg'
-            url_right = 'Assets/' + variants[0] + '.jpg'
-        self.trial_number_attentive += 1
-        pixmap = QtGui.QPixmap(url_left)
-        self.image_left.setPixmap(pixmap)
+            self.correct_key = 'U'
+        url = 'Assets/' + self.variant + '.png'
 
-        pixmap = QtGui.QPixmap(url_right)
-        self.image_right.setPixmap(pixmap)
+        pixmap = QtGui.QPixmap(url)
+        self.image.setPixmap(pixmap)
+        self.image.show()
         self.text_trial_number.setText(str(self.trial_number))
 
     # sets the displayed image for preattentive task rot
     def show_pre_attentive_images(self):
-        variants = ['P-1', 'P-2']
-        if IMAGE_SEQUENCE[self.trial_number_pre_attentive] == 1:
-            url_left = 'Assets/' + variants[1] + '.jpg'
-            url_right = 'Assets/' + variants[0] + '.jpg'
+        variants = ['P_Rot', 'P_Blau']
+        self.variant = random.choice(variants)
+        if self.variant.split('_')[1] == 'Rot':
+            self.correct_key = 'R'
         else:
-            url_left = 'Assets/' + variants[0] + '.jpg'
-            url_right = 'Assets/' + variants[1] + '.jpg'
-        self.trial_number_pre_attentive += 1
+            self.correct_key = 'U'
+        url = 'Assets/' + self.variant + '.jpg'
 
-        pixmap = QtGui.QPixmap(url_left)
-        self.image_left.setPixmap(pixmap)
-
-        pixmap = QtGui.QPixmap(url_right)
-        self.image_right.setPixmap(pixmap)
+        pixmap = QtGui.QPixmap(url)
+        self.image.setPixmap(pixmap)
+        self.image.show()
         self.text_trial_number.setText(str(self.trial_number))
 
     # changes the background for distraction ungerade
@@ -215,35 +199,26 @@ class Experiment(QWidget):
     # handels the user input
     def keyPressEvent(self, event):
         if self.started:
-            # gesuchtes Item links
-            if event.key() == Qt.Key_D and not self.wait:
+            # rot und gerage
+            if event.key() == Qt.Key_R and not self.wait:
+                self.image.hide()
                 self.reaction_time = time.time() - self.reaction_time
                 timestamp = time.time()
-                self.wait_for_next_task('D', timestamp)
-            # gesuchtes Item rechts
-            elif event.key() == Qt.Key_K and not self.wait:
+                self.wait_for_next_task('R', timestamp)
+            # blau und ungerade
+            elif event.key() == Qt.Key_U and not self.wait:
+                self.image.hide()
                 self.reaction_time = time.time() - self.reaction_time
                 timestamp = time.time()
-                self.wait_for_next_task('K', timestamp)
+                self.wait_for_next_task('U', timestamp)
 
     # creates the log entry
     def create_log_entry(self, pressed_number, timestamp):
-        if self.mental_complexity == 'P':
-            if (IMAGE_SEQUENCE[self.trial_number_pre_attentive - 1] == 1 and pressed_number == 'D') or (
-                    IMAGE_SEQUENCE[self.trial_number_pre_attentive - 1] == 2 and pressed_number == 'K'):
-                correct_key_pressed = True
-            else:
-                correct_key_pressed = False
-        elif self.mental_complexity == 'A':
-            if (IMAGE_SEQUENCE[self.trial_number_attentive - 1] == 1 and pressed_number == 'D') or (
-                    IMAGE_SEQUENCE[self.trial_number_attentive - 1] == 2 and pressed_number == 'K'):
-                correct_key_pressed = True
-            else:
-                correct_key_pressed = False
+        if self.correct_key == pressed_number:
+            correct_key_pressed = True
         else:
             correct_key_pressed = False
-
-        self.logger.write_row(self.trials[self.trial_number], self.mental_complexity, self.distraction, pressed_number,
+        self.logger.write_row(self.trials[self.trial_number], self.variant, self.distraction, pressed_number,
                               correct_key_pressed, self.reaction_time, timestamp)
 
     # waits and starts new task
