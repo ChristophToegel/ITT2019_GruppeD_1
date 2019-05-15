@@ -104,7 +104,7 @@ class Experiment(QWidget):
             " Als unser Teilnehmer sollst du so schnell wie die Tasten „R“ oder „U“ abhängig vom gezeigten Bild\n"
             " drücken. Siehst du ein rotes Quadrat oder eine gerade Zahl, so drückst du „R“, siehst du ein blaues\n"
             " Quadrat oder eine ungerade Zahl, drücke die „U“ Taste. Die Bilder werden dann nacheinander angezeigt.\n"
-            " Versuche deine Arme während des Experiments auf dem Tische liegen zu lassen und nur mit den Fingern \n"
+            " Versuche deine Arme während des Experiments auf dem Tisch liegen zu lassen und nur mit den Fingern \n"
             " zu arbeiten. Wie bei jedem Experiment kannst du als Proband aber nichts falsch machen.\n"
             " Bitte nimm nun deine Position ein, der Versuchsleiter wird das Programm starten. ")
         self.info_text.setAlignment(Qt.AlignCenter)
