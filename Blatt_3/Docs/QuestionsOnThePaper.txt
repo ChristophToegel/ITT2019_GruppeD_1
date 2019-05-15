@@ -1,0 +1,39 @@
+First Question
+Horbæk references 2 studies that show no correlation between user-reported results and
+objectively recorded data (Hornbæk, 2011, 35). This stems from usability being a multidimensional
+scale and the 2 reported data types measure different dimensions (Hornbæk, 2011, p. 35-36).
+Features we objectively apply to software or user experienced products may no be 
+perceived the same way we want to record them with objective measures.
+
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+Second Question
+Hornbæk talks about the effect, that using hypotheses before conducting the experiment, 
+will lead to biased results, as examiners will try to find the sought after outcome (p. 13).
+To the contrary formulating hypotheses beforehand clarifies research goals and validates them
+as hypotheses "must be (a) testable, (b) concise and (c) name key constructs" (Hornbæk, 2011, p. 14).
+This also allows for easier understanding of the paper by readers.
+
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+Third Question
+It depends on your study and it's design. Media informatics students are a specific group 
+and can differ from other groups or the general population. But this applies to all students 
+(Hornbæk, 2011,  p. 27).
+The study has to factor in whether the characteristics of the selected group of
+participants will have an effect on the recorded data and study outcomes. This might be through 
+knowledge of the subject or environments, social status, level of education.
+
+
+An example where using media informatics students as participants might effect results is:
+Effectiveness of usage of english or german user interfaces, as students often have better
+english language skills as the general population and media informatics students in particular 
+are familiar to english written software.
+
+A counter example, where it most likely won't have an effect on outcome would be:
+Studying reaction times to pre-attentively or attentively processed stimuli, as they
+mostly are triggered by subcontious mental processeses.
+
+
+Hornbæk, K. 2011. Some Whys and Hows of Experiments in Human–Computer Interaction. Found. Trends Hum.-Comput.
+ Interact. 5, 4 (2011), 299-373. DOI: http://dx.doi.org/10.1561/1100000043
