@@ -1,0 +1,39 @@
+First Question
+
+Indirect pointing devices make interaction on very big or small screens easier.
+Selections and traversing display areas with translated mouse movement, scaling
+from the same pointing device movements, are much more efficient than constant 
+pointer speeds. This is an advantage of indirect pointing devices.
+
+On a big presentation screen a direct pointing device would make no sense. 
+As screens get to big, humans can't interact directly with the whole screen
+or display are and therefore a relative pointing device is need translating one
+motion for use on the way bigger display.
+
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+Second Question
+
+Shift uses direct input, as the interaction still takes place at the original
+position and Shift only creates a copy of it for better visual representation 
+(only when a callout is created) (Vogel & Baudisch, 2007, p. 2).	
+Relative movement is used as interactions can be slowed down up to an 8:1 ratio
+(Vogel & Baudisch, 2007, p. 9). Shift is an isotonic device as well as an position
+controlled one, as are all touch screens ("Pointing device", 2019).
+Inputs are made by translating, as a finger gets moved across the screen in a 
+2 dimensional space, resulting in 2 degrees of freedom (Vogel & Baudisch, 2007).
+
+STATES
+
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+Third Question
+240 × 320px as in section "Apparatus" (Vogel & Baudisch, 2007, p. 7)
+
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+SOURCES
+
+Vogel, D., & Baudisch, P. (2007). Shift. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems - CHI 07. doi:10.1145/1240624.1240727
+
+Pointing device. (2019, March 02). Retrieved from https://en.wikipedia.org/w/index.php?title=Pointing_device&oldid=885861965
