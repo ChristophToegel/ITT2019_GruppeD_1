@@ -34,6 +34,7 @@ Third Question
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 SOURCES
 
-Vogel, D., & Baudisch, P. (2007). Shift. Proceedings of the SIGCHI Conference on Human Factors in Computing Systems - CHI 07. doi:10.1145/1240624.1240727
+Vogel, D., & Baudisch, P. (2007). Shift. Proceedings of the SIGCHI Conference on 
+Human Factors in Computing Systems - CHI 07. doi:10.1145/1240624.1240727
 
 Pointing device. (2019, March 02). Retrieved from https://en.wikipedia.org/w/index.php?title=Pointing_device&oldid=885861965
