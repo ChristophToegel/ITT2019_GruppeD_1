@@ -7,8 +7,8 @@ pointer speeds. This is an advantage of indirect pointing devices.
 
 On a big presentation screen a direct pointing device would make no sense. 
 As screens get to big, humans can't interact directly with the whole screen
-or display are and therefore a relative pointing device is need translating one
-motion for use on the way bigger display.
+or display anymore and therefore a relative pointing device is needed for translating
+ones physical bodily motions for use on the bigger display.
 
 
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -27,7 +27,8 @@ Inputs are made by translating, as a finger gets moved across the screen in a
 
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
 Third Question
-550 × 730mm as in section "Apparatus" (Vogel & Baudisch, 2007, p. 7)
+The device has a screen size  of 550 × 730mm with a resolution of 240 x 320 pixels
+as pointed out in section "Apparatus" (Vogel & Baudisch, 2007, p. 7)
 
 
 /\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
