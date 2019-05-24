@@ -73,8 +73,9 @@ class PointingExperiment(QWidget):
             return False
 
     def mouseMoveEvent(self, ev):
+        #self.filter()
         pass
-        # print('mouse moved')
+        #print('mouse moved')
         # print(ev)
         # self.filter(ev.pos())
 
@@ -114,7 +115,7 @@ class PointingExperiment(QWidget):
             qp.setBrush(QColor(200, 200, 200))
         qp.drawRect(event.rect())
 
-    def filter(self, curser_pos):
+    def filter(self):
         size = self.size()
         x = random.randint(1, size.width() - 1)
         y = random.randint(1, size.height() - 1)
