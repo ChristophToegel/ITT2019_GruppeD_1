@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
 import sys
+import random
+import math
 from PyQt5.QtWidgets import (QApplication, QLabel, QPushButton,
                              QVBoxLayout, QWidget)
 from PyQt5 import QtCore
 from PyQt5.QtGui import QPainter, QColor, QFont, QCursor
-import random
 
 
 # http://zetcode.com/gui/pyqt5/painting/
@@ -23,8 +24,10 @@ class PointingExperiment(QWidget):
         self.sizes = sizes
         self.distances = distances
         self.highlighted = highlighted
-        self.element_numbers = 9
+        self.element_numbers = 100
         self.init_ui()
+        self.screen_width = 600
+        self.screen_height = 600
 
     def init_ui(self):
         self.setWindowTitle('Poinitng Experiment')
@@ -57,15 +60,15 @@ class PointingExperiment(QWidget):
 
     def mousePressEvent(self, ev):
         if ev.button() == QtCore.Qt.LeftButton and self.started:
-            if self.check_target_selekted(ev.x(), ev.y()):
+            if self.check_target_selected(ev.x(), ev.y()):
                 print('loggen')
                 if self.number_task + 2 <= len(self.distances):
                     self.number_task += 1
                     self.update()
 
-    def check_target_selekted(self, curser_x, curser_y):
-        if curser_x in range(self.target_positon[0], self.target_positon[0] + self.target_positon[2]):
-            if curser_y in range(self.target_positon[1], self.target_positon[1] + self.target_positon[2]):
+    def check_target_selected(self, cursor_x, cursor_y):
+        if cursor_x in range(self.target_positon[0], self.target_positon[0] + self.target_positon[2]):
+            if cursor_y in range(self.target_positon[1], self.target_positon[1] + self.target_positon[2]):
                 return True
             else:
                 return False
@@ -73,9 +76,9 @@ class PointingExperiment(QWidget):
             return False
 
     def mouseMoveEvent(self, ev):
-        #self.filter()
+        # self.filter()
         pass
-        #print('mouse moved')
+        # print('mouse moved')
         # print(ev)
         # self.filter(ev.pos())
 
@@ -88,20 +91,41 @@ class PointingExperiment(QWidget):
             painter.end()
 
     def draw_points(self, painter):
-        width = self.sizes[self.number_task]
-        distance = self.distances[self.number_task]
+        radius = self.sizes[self.number_task]
+        distance_to_mouse = self.distances[self.number_task]
 
+        # randomly place objects
         for i in range(self.element_numbers):
-            y = (i % self.line_numbers + 1) * distance + 50
-            x = int(i / self.line_numbers) * distance + 50
-            if i == self.highlighted[self.number_task]:
+            y = int(random.random() * (self.screen_height - radius) + (radius / 2))
+            x = int(random.random() * (self.screen_width - radius) + (radius / 2))
+
+            # last drawn element is target
+            if i == self.element_numbers - 1:
                 color = QtCore.Qt.yellow
-                self.target_positon = (x, y, width)
+                print(self.target_positon)
+
+                # calc distance to mouse
+                mouse_qpoint = self.mapFromGlobal(QCursor.pos())
+                mouse_y = mouse_qpoint.y()
+                mouse_x = mouse_qpoint.x()
+
+                # create list of all possible traget points
+                for k in range(20):
+                    pi_frac = (2 * math.pi) / (20 - 1)
+                    x_circ = (math.cos((k + 1) * pi_frac) * radius) + mouse_x
+                    y_circ = (math.sin((k + 1) * pi_frac) * radius) + mouse_y
+                    tar_pos = []
+                    if radius > x_circ < self.width() - radius and radius > y_circ < self.height() - radius:
+                        tar_pos.append((x, y))
+
+                x, y = tar_pos[math.floor(random.random()*len(tar_pos)-1)]
+
             else:
-                color = QtCore.Qt.darkBlue
+                color = QtCore.Qt.lightGray
+
             painter.setPen(color)
             painter.setBrush(color)
-            painter.drawRect(x, y, width, width)
+            painter.drawEllipse(x, y, radius, radius)
 
     def drawText(self, event, painter):
         painter.setPen(QColor(168, 34, 3))
