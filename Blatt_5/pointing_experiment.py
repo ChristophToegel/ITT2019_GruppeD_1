@@ -3,6 +3,8 @@ import json
 import sys
 import random
 import math
+import time
+import csv
 from PyQt5.QtWidgets import (QApplication, QLabel, QPushButton,
                              QVBoxLayout, QWidget)
 from PyQt5 import QtCore
@@ -14,7 +16,7 @@ from PyQt5.QtGui import QPainter, QColor, QFont, QCursor
 
 class PointingExperiment(QWidget):
 
-    def __init__(self, user_id, sizes, distances, highlighted):
+    def __init__(self, user_id, sizes, distance, color_target, color_noise):
         super(QWidget, self).__init__()
         self.started = False
         self.setMouseTracking(True)
@@ -22,15 +24,27 @@ class PointingExperiment(QWidget):
         self.line_numbers = 3
         self.number_task = 0
         self.sizes = sizes
-        self.distances = distances
-        self.highlighted = highlighted
+        self.distances = distance
         self.element_numbers = 100
         self.init_ui()
         self.screen_width = 600
         self.screen_height = 600
+        self.logger = LogCSV(user_id, time)
+
+        if color_target == "yellow":
+            self.color_target = QtCore.Qt.yellow
+
+        if color_target == "darkGray":
+            self.color_target = QtCore.Qt.darkGray
+
+        if color_noise == "lightGray":
+            self.color_noise = QtCore.Qt.lightGray
+
+        if color_noise == "darkBlue":
+            self.color_noise = QtCore.Qt.darkBlue
 
     def init_ui(self):
-        self.setWindowTitle('Poinitng Experiment')
+        self.setWindowTitle('Pointing Experiment')
         self.text = "Please click on the target"
         self.setGeometry(0, 0, 600, 600)
         # self.setGeometry(0, 0, 1920, 900)
@@ -58,17 +72,22 @@ class PointingExperiment(QWidget):
         self.started = True
         self.update()
 
+    def create_log_entry(self, timestamp):
+        self.logger.write_row(self.trials[self.trial_number], self.variant, self.distraction, pressed_number,
+                              correct_key_pressed, self.reaction_time, timestamp)
+
     def mousePressEvent(self, ev):
         if ev.button() == QtCore.Qt.LeftButton and self.started:
             if self.check_target_selected(ev.x(), ev.y()):
-                print('loggen')
+
+                self.create_log_entry()
                 if self.number_task + 2 <= len(self.distances):
                     self.number_task += 1
                     self.update()
 
     def check_target_selected(self, cursor_x, cursor_y):
-        if cursor_x in range(self.target_positon[0], self.target_positon[0] + self.target_positon[2]):
-            if cursor_y in range(self.target_positon[1], self.target_positon[1] + self.target_positon[2]):
+        if cursor_x in range(self.target_position[0], self.target_position[0] + self.target_position[2]):
+            if cursor_y in range(self.target_position[1], self.target_position[1] + self.target_position[2]):
                 return True
             else:
                 return False
@@ -101,28 +120,30 @@ class PointingExperiment(QWidget):
 
             # last drawn element is target
             if i == self.element_numbers - 1:
-                color = QtCore.Qt.yellow
-                print(self.target_positon)
+                color = self.color_target
 
                 # calc distance to mouse
                 mouse_qpoint = self.mapFromGlobal(QCursor.pos())
                 mouse_y = mouse_qpoint.y()
                 mouse_x = mouse_qpoint.x()
 
-                # create list of all possible traget points
+                # create list of possible target points
+                tar_pos = []
                 for k in range(20):
                     pi_frac = (2 * math.pi) / (20 - 1)
-                    x_circ = (math.cos((k + 1) * pi_frac) * radius) + mouse_x
-                    y_circ = (math.sin((k + 1) * pi_frac) * radius) + mouse_y
-                    tar_pos = []
-                    if radius > x_circ < self.width() - radius and radius > y_circ < self.height() - radius:
+                    x_circ = (math.cos((k + 1) * pi_frac) * distance_to_mouse) + mouse_x
+                    y_circ = (math.sin((k + 1) * pi_frac) * distance_to_mouse) + mouse_y
+                    if radius < x_circ < self.width() - radius and radius < y_circ < self.height() - radius:
                         tar_pos.append((x, y))
 
                 x, y = tar_pos[math.floor(random.random()*len(tar_pos)-1)]
+                self.target_position = (x, y, radius*2)
 
+            # all the noise dots
             else:
-                color = QtCore.Qt.lightGray
+                color = self.color_noise
 
+            # draw the circle
             painter.setPen(color)
             painter.setBrush(color)
             painter.drawEllipse(x, y, radius, radius)
@@ -152,10 +173,56 @@ class PointingExperiment(QWidget):
         print('filetr')
 
 
+# handels the Logging (implemented by Christoph)
+class LogCSV():
+
+    # inits csv colums
+    def __init__(self, participant_id, time):
+        self.filename = 'Participant_' + participant_id + '_log.csv'
+        self.participant_id = participant_id
+        self.time = time
+        self.fieldnames = ['participant_id', 'stimulus', 'mental_complexity', 'distraction', 'pressed_key',
+                           'correct_key_pressed',
+                           'reaction_time', 'timestamp']
+        self.check_file()
+        self.open_file()
+
+    # checks if file exists
+    def check_file(self):
+        if os.path.isfile(self.filename):
+            self.write_header = False
+        else:
+            self.write_header = True
+
+    # opens the file and wirites the header
+    def open_file(self):
+        with open(self.filename, 'a+', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
+            if self.write_header:
+                writer.writeheader()
+            self.close_file(csvfile)
+
+    # closes the file
+    def close_file(self, file):
+        file.close()
+
+    # adds a log entry
+    def write_row(self, stimulus, mental_complexity, distraction, pressed_key, correct_key_pressed, reaction_time,
+                  timestamp):
+        with open(self.filename, 'a+', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
+            writer.writerow(
+                {'participant_id': self.participant_id, 'stimulus': stimulus, 'distraction': distraction,
+                 'mental_complexity': mental_complexity,
+                 'pressed_key': pressed_key, 'correct_key_pressed': correct_key_pressed, 'reaction_time': reaction_time,
+                 'timestamp': timestamp})
+        self.close_file(csvfile)
+
 def read_setup(filename):
     file = open(filename, "r")
     data = json.load(file)
-    return data['USER'], data['SIZE'], data['DISTANCES'], data['HIGHLIGHTED']
+    return data['USER'], data["CONF"]['SIZE'], data["CONF"]['DISTANCE'], data["CONF"]['COLOR_T'],\
+        data["CONF"]['COLOR_N']
 
 
 def main():
@@ -163,11 +230,11 @@ def main():
         sys.stderr.write("Usage: %s <setup file>\n" % sys.argv[0])
         sys.exit(1)
     file_name = sys.argv[1]
-    user_id, sizes, distances, highlighted = read_setup(file_name)
+    user_id, sizes, distance, color_target, color_noise = read_setup(file_name)
 
     app = QApplication(sys.argv)
     # widget is magic
-    widget = PointingExperiment(user_id, sizes, distances, highlighted)
+    widget = PointingExperiment(user_id, sizes, distance, color_target, color_noise)
     sys.exit(app.exec_())
 
 
