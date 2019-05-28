@@ -5,19 +5,29 @@ import random
 import math
 import time
 import csv
+import os
 from PyQt5.QtWidgets import (QApplication, QLabel, QPushButton,
                              QVBoxLayout, QWidget)
 from PyQt5 import QtCore
 from PyQt5.QtGui import QPainter, QColor, QFont, QCursor
+from pointing_technique import AnglePointing
 
 
 # http://zetcode.com/gui/pyqt5/painting/
-# SIZE< Distance ; 3 size+distance max 150
+# nur 4 conditions nah fern; poiting und notPoinitng;
+
+class ExperimentModel():
+
+    def __init__(self):
+        pass
 
 class PointingExperiment(QWidget):
 
     def __init__(self, user_id, sizes, distance, color_target, color_noise):
         super(QWidget, self).__init__()
+        self.pointer = AnglePointing(500)
+        self.model = ExperimentModel()
+        self.moved = False
         self.started = False
         self.setMouseTracking(True)
         self.line_height = 200
@@ -30,6 +40,7 @@ class PointingExperiment(QWidget):
         self.screen_width = 600
         self.screen_height = 600
         self.logger = LogCSV(user_id, time)
+        self.error_counter = 0
 
         if color_target == "yellow":
             self.color_target = QtCore.Qt.yellow
@@ -45,7 +56,7 @@ class PointingExperiment(QWidget):
 
     def init_ui(self):
         self.setWindowTitle('Pointing Experiment')
-        self.text = "Please click on the target"
+        self.text = "Please click on the marked target"
         self.setGeometry(0, 0, 600, 600)
         # self.setGeometry(0, 0, 1920, 900)
         # QtGui.QCursor.setPos(self.mapToGlobal(QtCore.QPoint(self.start_pos[0], self.start_pos[1])))
@@ -70,20 +81,30 @@ class PointingExperiment(QWidget):
         self.start_button.hide()
         self.info_text.hide()
         self.started = True
+        self.create_log_header()
         self.update()
 
-    def create_log_entry(self, timestamp):
-        self.logger.write_row(self.trials[self.trial_number], self.variant, self.distraction, pressed_number,
-                              correct_key_pressed, self.reaction_time, timestamp)
+    def create_log_header(self):
+        print('pointer_pos' + ',' + 'errors' + ',' +'task_completion_time' + ',' + 'condition')
+
+    def create_log_entry(self, timestamp, errors,pointer_pos,condition):
+        print(str(pointer_pos)+','+str(errors) + ',' + str(timestamp)+','+condition)
+        pass
+        # self.logger.write_row(self.trials[self.trial_number], self.variant, self.distraction, pressed_number,
+        #                      correct_key_pressed, self.reaction_time, timestamp)
 
     def mousePressEvent(self, ev):
         if ev.button() == QtCore.Qt.LeftButton and self.started:
+            timestamp = time.time()
             if self.check_target_selected(ev.x(), ev.y()):
-
-                self.create_log_entry()
+                self.create_log_entry(timestamp, self.error_counter, ev.pos(), 'condotion?')
+                # counts the task and shows a new one
                 if self.number_task + 2 <= len(self.distances):
                     self.number_task += 1
                     self.update()
+            else:
+                self.error_counter += 1
+
 
     def check_target_selected(self, cursor_x, cursor_y):
         if cursor_x in range(self.target_position[0], self.target_position[0] + self.target_position[2]):
@@ -95,11 +116,11 @@ class PointingExperiment(QWidget):
             return False
 
     def mouseMoveEvent(self, ev):
-        # self.filter()
-        pass
-        # print('mouse moved')
-        # print(ev)
-        # self.filter(ev.pos())
+        curser_pos = self.mapToGlobal(QtCore.QPoint(ev.x(), ev.y()))
+        curser_pos_x = curser_pos.x()
+        curser_pos_y = curser_pos.y()
+        x, y = self.pointer.filter(curser_pos_x, curser_pos_y)
+        QCursor.setPos(x, y)
 
     def paintEvent(self, event):
         if self.started:
@@ -136,8 +157,8 @@ class PointingExperiment(QWidget):
                     if radius < x_circ < self.width() - radius and radius < y_circ < self.height() - radius:
                         tar_pos.append((x, y))
 
-                x, y = tar_pos[math.floor(random.random()*len(tar_pos)-1)]
-                self.target_position = (x, y, radius*2)
+                x, y = tar_pos[math.floor(random.random() * len(tar_pos) - 1)]
+                self.target_position = (x, y, radius * 2)
 
             # all the noise dots
             else:
@@ -159,18 +180,6 @@ class PointingExperiment(QWidget):
         else:
             qp.setBrush(QColor(200, 200, 200))
         qp.drawRect(event.rect())
-
-    def filter(self):
-        size = self.size()
-        x = random.randint(1, size.width() - 1)
-        y = random.randint(1, size.height() - 1)
-        # self.setCursor(QtCore.Qt.OpenHandCursor)
-        # pos = QCursor.pos()
-        # QCursor()
-        QCursor.setPos(200, 200)
-        # QCursor.setPos(pos)
-        print(QCursor.pos())
-        print('filetr')
 
 
 # handels the Logging (implemented by Christoph)
@@ -218,11 +227,12 @@ class LogCSV():
                  'timestamp': timestamp})
         self.close_file(csvfile)
 
+
 def read_setup(filename):
     file = open(filename, "r")
     data = json.load(file)
-    return data['USER'], data["CONF"]['SIZE'], data["CONF"]['DISTANCE'], data["CONF"]['COLOR_T'],\
-        data["CONF"]['COLOR_N']
+    return data['USER'], data["CONF"]['SIZE'], data["CONF"]['DISTANCE'], data["CONF"]['COLOR_T'], \
+           data["CONF"]['COLOR_N']
 
 
 def main():
