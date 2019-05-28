@@ -55,7 +55,7 @@ for i in range(num_participants):
                    "CONF": {
                     "SIZE": size_list,
                     "DISTANCE": distance_list,
-                    "NEW_POINTING_TECHNIQUE:": pointing_list,
+                    "NEW_POINTING_TECHNIQUE": pointing_list,
                     "COLOR_T": color_target,
                     "COLOR_N": color_noise}}
 
