@@ -10,9 +10,12 @@ colors_noise = ["darkBlue", "lightGray"]
 # create empty list for trails
 trials_base_list = []
 
+modi=[(distances[1],'ON'),(distances[0],'OFF'),(distances[1],'OFF'),(distances[0],'ON')]
 # all possible variations
-modi = [(distances[1],'ON'),(distances[0],'OFF'),(distances[1],'OFF'),(distances[0],'ON')]
-pointing = []
+modi_p1 = [(distances[1],'ON'),(distances[0],'OFF'),(distances[1],'OFF'),(distances[0],'ON')] #1234
+modi_p2 = [(distances[0],'ON'),(distances[1],'OFF'),(distances[0],'OFF'),(distances[1],'ON')] #4321
+modi_p3 = [(distances[0],'OFF'),(distances[0],'ON'),(distances[1],'ON'),(distances[1],'OFF')] #2413
+modi_p4 = [(distances[1],'OFF'),(distances[1],'ON'),(distances[0],'ON'),(distances[0],'OFF')] #3142
 
 for i in range(num_participants):
 
@@ -22,10 +25,25 @@ for i in range(num_participants):
     distance_list= []
     pointing_list = []
 
-    # create the counter balanced list?
     for num in range(repetitions):
-        pointing_list.append(modi[(num+i) % 4][1])
-        distance_list.append(modi[(num+i) % 4][0])
+        if i==0:
+            pointing_list.append(modi_p1[num % 4][1])
+            distance_list.append(modi_p1[num % 4][0])
+        elif i==1:
+            pointing_list.append(modi_p2[num % 4][1])
+            distance_list.append(modi_p2[num % 4][0])
+        elif i==2:
+            pointing_list.append(modi_p3[num% 4][1])
+            distance_list.append(modi_p3[num % 4][0])
+        elif i==3:
+            pointing_list.append(modi_p4[num % 4][1])
+            distance_list.append(modi_p4[num % 4][0])
+
+
+    # create the counter balanced list?
+    #for num in range(repetitions):
+    #    pointing_list.append(modi[(num+i) % 4][1])
+    #    distance_list.append(modi[(num+i) % 4][0])
 
     # get size of
     size_list = [30] * repetitions
