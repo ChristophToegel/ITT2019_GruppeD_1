@@ -2,16 +2,13 @@ import json
 
 num_participants = 4
 repetitions = 40
-distances = [60, 400]
-distances_low = [40,60,80,100,120,140] #?
-distances_far = [320,340,360,380,400,420] #?
+distances = ['NEAR', 'FAR']
 colors_target = ["yellow", "darkGray"]
 colors_noise = ["darkBlue", "lightGray"]
 
 # create empty list for trails
 trials_base_list = []
 
-modi=[(distances[1],'ON'),(distances[0],'OFF'),(distances[1],'OFF'),(distances[0],'ON')]
 # all possible variations
 modi_p1 = [(distances[1],'ON'),(distances[0],'OFF'),(distances[1],'OFF'),(distances[0],'ON')] #1234
 modi_p2 = [(distances[0],'ON'),(distances[1],'OFF'),(distances[0],'OFF'),(distances[1],'ON')] #4321
@@ -41,20 +38,11 @@ for i in range(num_participants):
             distance_list.append(modi_p4[num % 4][0])
 
 
-    # create the counter balanced list?
-    #for num in range(repetitions):
-    #    pointing_list.append(modi[(num+i) % 4][1])
-    #    distance_list.append(modi[(num+i) % 4][0])
-
-    # get size of
-    size_list = [30] * repetitions
-
     color_target = colors_target[0]
     color_noise = colors_noise[0]
 
     full_config = {"USER": participant_user,
                    "CONF": {
-                    "SIZE": size_list,
                     "DISTANCE": distance_list,
                     "NEW_POINTING_TECHNIQUE": pointing_list,
                     "COLOR_T": color_target,

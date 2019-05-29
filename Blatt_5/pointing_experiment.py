@@ -19,22 +19,27 @@ from pointing_technique import AnglePointing
 class ExperimentModel():
 
     # inits all variabeles
-    def __init__(self, user_id, sizes, distances, new_pointing):
+    def __init__(self, user_id, distances, new_pointing):
         self.error_counter = 0
         self.started = False
         self.number_task = 0
-        self.sizes = sizes
         self.user_id = user_id
         self.distances = distances
         self.new_poinitng = new_pointing
         self.task_timer = 0
+        self.radius = 30
         self.target_position = (0, 0, 0)
+        self.distances_near = [40, 60, 80, 100, 120, 140]
+        self.distances_far = [320, 340, 360, 380, 400, 420]
 
     # return the radius and distance for the current task
     def get_task_draw_para(self):
-        radius = self.sizes[self.number_task]
-        distance_to_mouse = self.distances[self.number_task]
-        return radius, distance_to_mouse
+        #radius = self.sizes[self.number_task]
+        if self.distances[self.number_task]=='NEAR':
+            distance_to_mouse=random.choice(self.distances_near)
+        else:
+            distance_to_mouse=random.choice(self.distances_far)
+        return self.radius, distance_to_mouse
 
     # return if the new_ponting technique is used
     def get_task_mouse_para(self):
@@ -49,7 +54,7 @@ class ExperimentModel():
 
     def create_log_entry(self, timestamp, pointer_pos):
         task_completion_time = timestamp - self.task_timer
-        print(str(self.user_id) + ',' + str(pointer_pos.x()) + ';' + str(pointer_pos.y()) + ',' + str(
+        print(str(self.user_id) + ',' + str(pointer_pos.x()) + ':' + str(pointer_pos.y()) + ',' + str(
             self.error_counter) + ',' + str(timestamp) + ',' + str(task_completion_time) +
               ',' + str(self.get_task_mouse_para()) + ',' + str(self.distances[self.number_task]))
         self.reset_error_counter()
@@ -208,7 +213,7 @@ class PointingExperiment(QWidget):
 def read_setup(filename):
     file = open(filename, "r")
     data = json.load(file)
-    return data['USER'], data["CONF"]['SIZE'], data["CONF"]['DISTANCE'], data["CONF"]['COLOR_T'], \
+    return data['USER'], data["CONF"]['DISTANCE'], data["CONF"]['COLOR_T'], \
            data["CONF"]['COLOR_N'], data["CONF"]['NEW_POINTING_TECHNIQUE']
 
 
@@ -217,11 +222,11 @@ def main():
         sys.stderr.write("Usage: %s <setup file>\n" % sys.argv[0])
         sys.exit(1)
     file_name = sys.argv[1]
-    user_id, sizes, distance, color_target, color_noise, new_pointing = read_setup(file_name)
+    user_id, distance, color_target, color_noise, new_pointing = read_setup(file_name)
 
     app = QApplication(sys.argv)
     # widget is magic
-    model = ExperimentModel(user_id, sizes, distance, new_pointing)
+    model = ExperimentModel(user_id, distance, new_pointing)
     widget = PointingExperiment(color_target, color_noise, model)
     sys.exit(app.exec_())
 
