@@ -5,12 +5,12 @@ Workload distribution among team:
 Julian: AnglePointing
 '''
 '''
-The implemented AnglePointing Technique is a simple implementaion of the Angle Mouse. The Idea behind this technique
+The implemented AnglePointing Technique is a simple implementation of the Angle Mouse. The Idea behind this technique
 can be compared to a car race, you are faster on the straight line and slower on the curves. In this case the the angle
 form the last point and actual point is calculated and if the difference is smaller than a defined difference the
-mouse moves faster. The factor of the mouse boost is parameterizable. The boost also includes the given step form
-the last point and the current point as a factor. To sum it up this pointing technique will speed up your mouse is you
-move within an certain angle.
+mouse moves faster. The factor of the mouse boost and the difference angle is parameterizable. The boost also includes
+the given step form the last point and the current point as a factor. To sum it up this pointing technique will speed
+up your mouse if you move within an certain angle (close to linear).
 
 used sources:
 Wobbrock, J. O., Fogarty, J., Liu, S. Y. S., Kimuro, S., & Harada, S. (2009, April). The angle mouse: target-agnostic
