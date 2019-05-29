@@ -103,7 +103,7 @@ class PointingExperiment(QWidget):
 
     def __init__(self, color_target, color_noise, model):
         super(QWidget, self).__init__()
-        self.pointer = AnglePointing()
+        self.pointer = AnglePointing(1.2)
         self.model = model
         self.setMouseTracking(True)
         self.element_numbers = 100
@@ -190,18 +190,15 @@ class PointingExperiment(QWidget):
         for i in range(self.element_numbers):
             y = int(random.random() * (self.screen_height - radius * 2) + (radius / 2))
             x = int(random.random() * (self.screen_width - radius * 2) + (radius / 2))
-
             # last drawn element is target
             if i == self.element_numbers - 1:
                 color = self.color_target
                 mouse_qpoint = self.mapFromGlobal(QCursor.pos())
                 x, y = self.model.calculate_target_dest(mouse_qpoint, radius, distance_to_mouse, self.height(),
                                                         self.width())
-
             # all the noise dots
             else:
                 color = self.color_noise
-
             # draw the circle
             painter.setPen(color)
             painter.setBrush(color)

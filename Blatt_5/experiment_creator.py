@@ -1,9 +1,10 @@
 import json
-import numpy
 
 num_participants = 4
 repetitions = 40
-distances = [60, 150]
+distances = [60, 400]
+distances_low = [40,60,80,100,120,140] #?
+distances_far = [320,340,360,380,400,420] #?
 colors_target = ["yellow", "darkGray"]
 colors_noise = ["darkBlue", "lightGray"]
 
