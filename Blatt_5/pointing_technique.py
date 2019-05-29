@@ -10,8 +10,7 @@ import math
 
 class AnglePointing:
 
-    def __init__(self, target_near):
-        #print('initialisieren mit boost:' + str(target_near))
+    def __init__(self):
         self.last_pos = (0, 0)
         self.positions = []
         self.last_angle = 0
@@ -35,27 +34,6 @@ class AnglePointing:
             if current_angle != 0:
                 self.last_angle=current_angle
             #print(self.boost)
-
-        '''# get direction
-        if self.last_pos[0] - current_x > 0:
-            print('nach links')
-            self.directon_right = False
-            if self.last_pos[1] - current_y > 0:
-                print('nach oben')
-                self.directon_up = True
-            else:
-                print('nach unten')
-                self.directon_up = False
-        else:
-            print('nach rechts')
-            self.directon_right = True
-            if self.last_pos[1] - current_y > 0:
-                print('nach oben')
-                self.directon_up = True
-            else:
-                print('nach unten')
-                self.directon_up = False
-        '''
 
         # step
         step_x = (self.last_pos[0] - current_x)
