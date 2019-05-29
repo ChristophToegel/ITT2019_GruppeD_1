@@ -10,6 +10,12 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import QPainter, QCursor
 from pointing_technique import AnglePointing
 
+'''
+Workload distribution among team:
+    Christoph: read_setup(reads config file) and the experiment_creator.py(creates config file), PointingExperiment
+    Julian: ExperimentModel, main
+'''
+
 
 # sources:
 # http://zetcode.com/gui/pyqt5/painting/
@@ -46,8 +52,7 @@ class ExperimentModel():
             return False
 
     def create_log_header(self):
-        print('user_id' + ',' + 'pointer_pos' + ',' + 'errors' + ',' + 'timestamp' + ',' + 'task_completion_time' + ','
-                                                                                                                    'new_pointing_technique' + ',' + 'distance')
+        print('user_id,pointer_pos,errors,timestamp,task_completion_time,new_pointing_technique,distance')
 
     def create_log_entry(self, timestamp, pointer_pos):
         task_completion_time = timestamp - self.task_timer
@@ -105,7 +110,7 @@ class PointingExperiment(QWidget):
 
     def __init__(self, color_target, color_noise, model):
         super(QWidget, self).__init__()
-        self.pointer = AnglePointing(boost_factor=1.5,angle_difference=10)
+        self.pointer = AnglePointing(boost_factor=1.5, angle_difference=10)
         self.model = model
         self.setMouseTracking(True)
         self.element_numbers = 100
@@ -135,10 +140,11 @@ class PointingExperiment(QWidget):
         self.layout = QVBoxLayout()
         self.setLayout(self.layout)
         self.setStyleSheet("background-color:white;")
-        self.info_text = QLabel("Try to click on the yellow marked Circle")
+        self.info_text = QLabel("Please click on the yellow marked circle")
         self.info_text.setAlignment(QtCore.Qt.AlignCenter)
         self.info_text.setStyleSheet("color:black;")
         self.start_button = QPushButton("start Experiment")
+        self.start_button.setStyleSheet("color:black;")
         self.start_button.clicked.connect(self.hide_description)
         self.layout.addWidget(self.info_text)
         self.layout.addWidget(self.start_button)
@@ -210,8 +216,11 @@ class PointingExperiment(QWidget):
 def read_setup(filename):
     file = open(filename, "r")
     data = json.load(file)
-    return data['USER'], data["CONF"]['DISTANCE'], data["CONF"]['COLOR_T'], \
-           data["CONF"]['COLOR_N'], data["CONF"]['NEW_POINTING_TECHNIQUE']
+    distance = data["CONF"]['DISTANCE']
+    color_t = data["CONF"]['COLOR_T']
+    color_n = data["CONF"]['COLOR_N']
+    poinitng = data["CONF"]['NEW_POINTING_TECHNIQUE']
+    return data['USER'], distance, color_t, color_n, poinitng
 
 
 def main():

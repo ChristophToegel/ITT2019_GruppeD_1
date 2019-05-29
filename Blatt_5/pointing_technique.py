@@ -1,28 +1,30 @@
 import math
 
 '''
-    The implemented AnglePointing Technique is a simple implementaion of the Angle Mouse. The Idea behind this 
-    technique can be compared
-    to a car race, you are faster on the straight line and slower on the curves. In this case the the angle form the
-    last point and actual point is calculated and if the difference is smaller than a defined difference the mouse 
-    moves faster. The factor of the mouse boost is parameterizable. The boost also includes the given step form the 
-    last point and the current point as a factor. To sum it up this pointing technique will speed up your mouse is you 
-    move within an certain angle. 
-    
-    used sources:
-    Wobbrock, J. O., Fogarty, J., Liu, S. Y. S., Kimuro, S., & Harada, S. (2009, April). The angle mouse: 
-    target-agnostic dynamic gain adjustment based on angular deviation. In Proceedings of the SIGCHI Conference
-    on Human Factors in Computing Systems (pp. 1401-1410). ACM.
-    
-    https://www.youtube.com/watch?v=O4ahGmHenps
-    https://stackoverflow.com/questions/42258637/how-to-know-the-angle-between-two-points
+Workload distribution among team:
+Julian: AnglePointing
+'''
+'''
+The implemented AnglePointing Technique is a simple implementaion of the Angle Mouse. The Idea behind this technique
+can be compared to a car race, you are faster on the straight line and slower on the curves. In this case the the angle
+form the last point and actual point is calculated and if the difference is smaller than a defined difference the
+mouse moves faster. The factor of the mouse boost is parameterizable. The boost also includes the given step form
+the last point and the current point as a factor. To sum it up this pointing technique will speed up your mouse is you
+move within an certain angle.
+
+used sources:
+Wobbrock, J. O., Fogarty, J., Liu, S. Y. S., Kimuro, S., & Harada, S. (2009, April). The angle mouse: target-agnostic
+dynamic gain adjustment based on angular deviation. In Proceedings of the SIGCHI Conferenceon Human Factors in
+Computing Systems (pp. 1401-1410). ACM.
+https://www.youtube.com/watch?v=O4ahGmHenps
+https://stackoverflow.com/questions/42258637/how-to-know-the-angle-between-two-points
 '''
 
 
 class AnglePointing:
 
     # inits the used variables
-    def __init__(self, boost_factor,angle_difference):
+    def __init__(self, boost_factor, angle_difference):
         self.last_pos = (0, 0)
         self.last_angle = 0
         self.boost = False
