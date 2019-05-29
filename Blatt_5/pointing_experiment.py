@@ -4,17 +4,15 @@ import sys
 import random
 import math
 import time
-import csv
-import os
 from PyQt5.QtWidgets import (QApplication, QLabel, QPushButton,
                              QVBoxLayout, QWidget)
 from PyQt5 import QtCore
-from PyQt5.QtGui import QPainter, QColor, QFont, QCursor
+from PyQt5.QtGui import QPainter, QCursor
 from pointing_technique import AnglePointing
 
 
+# sources:
 # http://zetcode.com/gui/pyqt5/painting/
-# nur 4 conditions nah fern; poiting und notPoinitng;
 
 class ExperimentModel():
 
@@ -30,15 +28,14 @@ class ExperimentModel():
         self.radius = 30
         self.target_position = (0, 0, 0)
         self.distances_near = [40, 60, 80, 100, 120, 140]
-        self.distances_far = [320, 340, 360, 380, 400, 420]
+        self.distances_far = [400, 420, 440, 460, 480, 500]
 
     # return the radius and distance for the current task
     def get_task_draw_para(self):
-        #radius = self.sizes[self.number_task]
-        if self.distances[self.number_task]=='NEAR':
-            distance_to_mouse=random.choice(self.distances_near)
+        if self.distances[self.number_task] == 'NEAR':
+            distance_to_mouse = random.choice(self.distances_near)
         else:
-            distance_to_mouse=random.choice(self.distances_far)
+            distance_to_mouse = random.choice(self.distances_far)
         return self.radius, distance_to_mouse
 
     # return if the new_ponting technique is used
@@ -108,7 +105,7 @@ class PointingExperiment(QWidget):
 
     def __init__(self, color_target, color_noise, model):
         super(QWidget, self).__init__()
-        self.pointer = AnglePointing(1.2)
+        self.pointer = AnglePointing(boost_factor=1.5,angle_difference=10)
         self.model = model
         self.setMouseTracking(True)
         self.element_numbers = 100

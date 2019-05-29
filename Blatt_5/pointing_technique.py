@@ -1,7 +1,8 @@
 import math
 
 '''
-    The poinitng Technique is a simple implementaion of the Angle Mouse. The Idea behind this technique can be compared
+    The implemented AnglePointing Technique is a simple implementaion of the Angle Mouse. The Idea behind this 
+    technique can be compared
     to a car race, you are faster on the straight line and slower on the curves. In this case the the angle form the
     last point and actual point is calculated and if the difference is smaller than a defined difference the mouse 
     moves faster. The factor of the mouse boost is parameterizable. The boost also includes the given step form the 
@@ -21,12 +22,13 @@ import math
 class AnglePointing:
 
     # inits the used variables
-    def __init__(self, boost_factor):
+    def __init__(self, boost_factor,angle_difference):
         self.last_pos = (0, 0)
         self.last_angle = 0
         self.boost = False
         self.boost_factor = boost_factor
-        self.angle_difference = 10
+        self.angle_difference = angle_difference
+        self.debug = False
 
     def filter(self, current_x, current_y):
         if self.last_pos != (current_x, current_y):
@@ -39,9 +41,8 @@ class AnglePointing:
             if self.boost:
                 new_x = int(current_x - (step_x * self.boost_factor))
                 new_y = int(current_y - (step_y * self.boost_factor))
-                # print('changedTo')
-                # print(new_x,new_y)
                 self.last_pos = (new_x, new_y)
+                self.debug_position(current_x, current_y, new_x, new_y)
                 return new_x, new_y
             else:
                 self.last_pos = (current_x, current_y)
@@ -59,12 +60,15 @@ class AnglePointing:
                 self.boost = False
             else:
                 self.boost = True
-            # print(abs(self.last_angle - current_angle))
             if current_angle != 0:
                 self.last_angle = current_angle
-            # print(self.boost)
 
     def calculate_step(self, current_x, current_y):
         step_x = (self.last_pos[0] - current_x)
         step_y = (self.last_pos[1] - current_y)
         return step_x, step_y
+
+    def debug_position(self, current_x, current_y, new_x, new_y):
+        if self.debug:
+            print('Pos changed from: (' + str(current_x) + ',' + str(current_y) + ') to (' + str(new_x) + ',' + str(
+                new_y) + ')')
