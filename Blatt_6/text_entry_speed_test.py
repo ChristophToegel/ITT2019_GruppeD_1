@@ -4,7 +4,7 @@ import time
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QWidget, QTextEdit, QVBoxLayout, QCompleter, QLineEdit
-from text_input_technique import InputTechnique
+from text_input_technique import TextEditCom
 
 
 # https://doc.qt.io/qt-5/qtextedit.html
@@ -99,8 +99,11 @@ class Experiment(QWidget):
         self.input_text.setReadOnly(True)
         # self.input_text.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
+        comText = TextEditCom('text.txt')
+
         layout.addWidget(self.input_text)
         layout.addWidget(self.edit)
+        layout.addWidget(comText)
         self.setLayout(layout)
         self.show_next(True)
 
@@ -135,9 +138,17 @@ class SuperText(QTextEdit):
         self.setHtml('')
 
 
+def read_text_form_file(filename):
+    sentences=[]
+    file = open("text.txt")
+    for line in file:
+        sentences.append(line)
+    file.close()
+    return sentences
+
 def main():
     app = QApplication(sys.argv)
-    sentences = ['satz eins.', 'satz zwei.', 'satz drei.']
+    sentences=read_text_form_file('text.txt')
     logging = Logging()
     # widget is magic
     widget = Experiment(logging, sentences)
