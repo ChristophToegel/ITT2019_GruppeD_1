@@ -1,0 +1,148 @@
+# -*- coding: utf-8 -*-
+import sys
+import time
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QApplication, QWidget, QTextEdit, QVBoxLayout, QCompleter, QLineEdit
+from text_input_technique import InputTechnique
+
+
+# https://doc.qt.io/qt-5/qtextedit.html
+
+class Logging():
+
+    def __init__(self):
+        self.time_sentence = 0
+        self.time_word = 0
+        self.time_complete = 0
+        self.typed_sentences = ""
+        self.write_haeder()
+        self.timestamp = 0
+
+    def loginput(self, text, timestamp):
+        finished = False
+        self.timestamp = timestamp
+        if len(text) >= 1:
+            last_input = text[len(text) - 1]
+            words = text.split()
+            current_word = words[len(words) - 1]
+
+            if len(text) == 1:
+                self.time_sentence = timestamp
+                if self.typed_sentences== "":
+                    self.time_complete=timestamp
+            elif len(text) >= 2:
+                second_last_input = text[len(text) - 2]
+                if second_last_input.isspace():
+                    self.time_word = timestamp
+
+            # key pressed
+            self.write_log_entry('key pressed', last_input, current_word, text)#.replace('\n', ''), )
+
+            # word typed
+            if last_input.isspace():
+                self.write_log_entry('word typed', last_input, current_word, text)#.replace('\n', ''))
+
+            # sentence typed
+            if last_input == '\n':
+                self.write_log_entry('sentence typed', last_input, current_word, text)#.replace('\n', ''))
+                self.typed_sentences+=text#.replace('\n', '')
+                finished = True
+
+        return finished
+
+    def write_haeder(self):
+        print(
+            'event_type,current_char,timestamp,current_word,current_word_time,current_sentence,current_sentence_time,'
+            'complete_text,current_complete_time')
+
+    def write_log_entry(self, event_name, char, word, sentence):
+        #if char == '\n':
+        #    char = ' '
+        time_word = self.timestamp - self.time_word
+        time_sentence = self.timestamp - self.time_sentence
+        time_complete = self.timestamp - self.time_complete
+        text = self.typed_sentences + sentence
+
+        log_string = event_name +',"' + char + '"' +',' + str(self.timestamp)
+        log_string += ',"' + str(word) + '",' + str(time_word)
+        log_string += ',"' + str(sentence) + '",' + str(time_sentence)
+        log_string += ',"' + str(text) + '",' + str(time_complete)
+        print(log_string)
+
+    def finished_experiment(self):
+        self.write_log_entry('test finished', '', '', '')
+
+
+class Experiment(QWidget):
+    input_trigger = QtCore.pyqtSignal(str, float)
+
+    def __init__(self, logging, sentences):
+        super(QWidget, self).__init__()
+        self.screen_width = 700
+        self.screen_height = 400
+        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.setMouseTracking(True)
+        self.setWindowTitle('Typing Experiment')
+        self.setGeometry(0, 0, self.screen_width, self.screen_height)
+        self.show()
+        self.logging = logging
+        self.sentences = sentences
+        self.current_task = 0
+
+        # elements
+        layout = QVBoxLayout()
+        self.input_trigger.connect(self.log)
+        self.edit = SuperText(self.input_trigger)
+
+        self.input_text = QTextEdit()
+        self.input_text.setReadOnly(True)
+        # self.input_text.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+
+        layout.addWidget(self.input_text)
+        layout.addWidget(self.edit)
+        self.setLayout(layout)
+        self.show_next(True)
+
+    def log(self, text, timestamp):
+        finished_sentence = self.logging.loginput(text, timestamp)
+        self.show_next(finished_sentence)
+
+    def show_next(self, finished_sentence):
+        if finished_sentence:
+            if len(self.sentences) == self.current_task:
+                self.logging.finished_experiment()
+                exit()
+            self.current_task += 1
+            self.input_text.setText(self.sentences[self.current_task - 1])
+            self.edit.clear_input()
+
+
+class SuperText(QTextEdit):
+
+    def __init__(self, input_trigger):
+        QLineEdit.__init__(self)
+        super(SuperText, self).__init__()
+        self.setHtml('')
+        self.input_trigger = input_trigger
+        self.textChanged.connect(self.handle_input)
+
+    def handle_input(self):
+        timestamp = time.time()
+        self.input_trigger.emit(self.toPlainText(), timestamp)
+
+    def clear_input(self):
+        self.setHtml('')
+
+
+def main():
+    app = QApplication(sys.argv)
+    sentences = ['satz eins.', 'satz zwei.', 'satz drei.']
+    logging = Logging()
+    # widget is magic
+    widget = Experiment(logging, sentences)
+    sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()
