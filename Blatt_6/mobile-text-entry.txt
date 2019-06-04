@@ -1,0 +1,37 @@
+The authors begin by introducing new fields of mobile computing, mainly text based interactions
+like reminders, calendar, chatting or organizing.
+Keyboard interaction can be directly interpreted, while pen based input produces digital ink 
+which needs to be interpreted. 
+
+Performance is measured with a combination of accuracy and speed, which affect each other.
+Text-copying tasks on controlled input hardware are primarily used 
+
+Entry optimization can be done by minimizing users movements or predicting the desired input.
+The first one tries to arrange inputs more efficiently while the later uses frequencies within
+languages to predict. Therefore corpora are needed reflecting the users needs. 
+In order to optimize keyboards for mobile screensambiguity on keypads and techniques like T9 
+or using an extra shift-key are used.
+
+QWERTY-layouts can be implemented with hardware keys or software sided. Using half-keyboards
+or Five- or Three-Key-layouts reduce the size. Single Hand layouts focus on usability aspects, while
+chord typing uses a different approach for text prediction, allowing multiple key to be pressed at once.
+
+Users expect very low input errors for stylus based text entry. Therefore stylized alphabets like Unistroke
+or more natural ones like Graffiti are used to help the computer predict desired letters.
+Other methods are gesture based inputs like Cirrin, where letters are arranged in a circle requiring the user
+to swipe from segment to segment. This and variations like Quickwriting require the users attention at all time
+resulting in a non "head-up" text input technique.
+
+Soft keys often use QWERTY or alphabetical arrangements in different sizes and spacings.
+Evaluation of their performance is often vague as Fitts Law constants may 
+have not been adjusted. Layouts vary from boxes (OPTI), to spread out designs (Cubon) or even radial ones (Hook's
+keyboard). Design with 2 layers and a switch (DotNode) are also implemented, allowing for easier one-handed use.
+Another input paradigm are predictive input techniques. The Reactive Keyboard uses previous inputs for suggestions
+while POBox recommends word based on similar spelling. Keyboards may also change from letters to words
+as is presented by Lewis et al. (Lewis, 1999; Lewis et al., 1999a), though new usability problems are introduced.
+
+Error treatment as well as internationalization have to be examined in future works.
+
+SOURCES 
+
+MacKenzie, I. S., & Soukoreff, R. W. (2002). Text entry for mobile computing: Models and methods, theory and practice. Human-Computer Interaction, 17, 147-198.

@@ -1,0 +1,37 @@
+VelociWatch
+
+VelociWatch tackles the problem of auto correcting algorithms changing the users
+desired input on the extrem for factor of a smart watch display. Testing the option
+to lock letters from predictions and simplifying the keyboard for smart watches led
+to the keyboard design with prediction slots and a literal field. Low error rates
+were examined over a variety of tests, while users preferred typing over swiping keys.
+The study shows simplicity and correction methods for text inputs.
+
+Vertanen, K., Gaines, D., Fletcher, C., Stanage, A. M., Watling, R., & Kristensson, 
+P. O. (2019). VelociWatch. Proceedings of the 2019 CHI Conference on Human Factors 
+in Computing Systems - CHI 19. doi:10.1145/3290605.3300821
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+RotoSwype
+
+RotoSwype presents a new way of using rotation for text entry. Th Users wears a ring
+which translates rotation into moving a cursor on a keyboard. With the click of a button
+on the ring a key is pressed or letters get deleted. Users report problems with 
+clicking the button while maintaining precise selection of keys
+
+Gupta, A., Ji, C., Yeo, H., Quigley, A., & Vogel, D. (2019). RotoSwype. 
+Proceedings of the 2019 CHI Conference on Human Factors in Computing Systems - CHI 19.
+doi:10.1145/3290605.3300244
+
+/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+RayCursor
+
+RayCursor extends the commonly used RayTracing pointing technique by adding a cursor along
+the ray. Methods like filtering and highlighting closest allow for a more precise pointing
+method. The hardware consists of a HTC vive Controller and its touchpad for moving the 
+cursor along the ray. This method allows for new selection and manipulating techniques 
+previous raytracing wasn't able to provide.
+
+Marc Baloup, Thomas Pietrzak, Géry Casiez. RayCursor: a 3D Pointing Facilitation Technique
+ based on Raycasting. CHI 2019 - Proceedings of the ACM Conference on Human Factors in 
+Computing Systems, May 2019, Glasgow, United Kingdom. 10.1145/3290605.3300331 . hal-02015844
