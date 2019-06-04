@@ -9,7 +9,7 @@ Text-copying tasks on controlled input hardware are primarily used
 Entry optimization can be done by minimizing users movements or predicting the desired input.
 The first one tries to arrange inputs more efficiently while the later uses frequencies within
 languages to predict. Therefore corpora are needed reflecting the users needs. 
-In order to optimize keyboards for mobile screensambiguity on keypads and techniques like T9 
+In order to optimize keyboards for mobile screens ambiguity on keypads and techniques like T9 
 or using an extra shift-key are used.
 
 QWERTY-layouts can be implemented with hardware keys or software sided. Using half-keyboards
