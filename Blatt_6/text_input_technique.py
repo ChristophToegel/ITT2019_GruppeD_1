@@ -3,6 +3,7 @@ from PyQt5.QtGui import QKeySequence, QTextCursor
 from PyQt5.QtWidgets import QLineEdit, QCompleter, QTextEdit, QDirModel
 import time
 
+
 # https://stackoverflow.com/questions/28956693/pyqt5-qtextedit-auto-completion
 # https://github.com/baoboa/pyqt5/blob/master/examples/tools/customcompleter/customcompleter.py
 # https://doc.qt.io/qtforpython/PySide2/QtWidgets/QCompleter.html
@@ -10,7 +11,7 @@ import time
 # https://www.programcreek.com/python/example/108066/PyQt5.QtWidgets.QCompleter
 
 class TextEditTechnique(QTextEdit):
-    def __init__(self, text_file,input_trigger=None,active=True):
+    def __init__(self, text_file, input_trigger=None, active=True):
         super(TextEditTechnique, self).__init__()
         self._completer = None
         self.isActive = active
@@ -19,9 +20,9 @@ class TextEditTechnique(QTextEdit):
         self.textChanged.connect(self.handle_input)
         self.char_length = 1
         self.set_completer(word_list)
-        self.eow = "~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-= "
+        self.no_suggestion_input = "~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-= "
 
-
+    # gets words for suggestion
     def get_suggestion_words(self, text_file):
         words = []
         file = open(text_file)
@@ -33,21 +34,16 @@ class TextEditTechnique(QTextEdit):
         file.close()
         return words
 
-    def deactivate_completer(self):
-        self.isActive = False
-
+    # initializes the completer
     def set_completer(self, words):
         if self._completer is not None:
             self._completer.activated.disconnect()
-        self._completer= QCompleter(words, self)
+        self._completer = QCompleter(words, self)
         self._completer.setCaseSensitivity(Qt.CaseInsensitive)
         self._completer.setWrapAround(False)
         self._completer.setWidget(self)
         self._completer.setCompletionMode(QCompleter.PopupCompletion)
         self._completer.activated.connect(self.insert_sel_suggestion)
-
-    #def completer(self):
-    #    return self._completer
 
     # insert the selected suggestion and moves the text cursor
     def insert_sel_suggestion(self, suggestion):
@@ -60,7 +56,7 @@ class TextEditTechnique(QTextEdit):
         text_cursor.insertText(suggestion[-extra:])
         self.setTextCursor(text_cursor)
 
-    def textUnderCursor(self):
+    def text_under_cursor(self):
         text_cursor = self.textCursor()
         text_cursor.select(QTextCursor.WordUnderCursor)
         return text_cursor.selectedText()
@@ -76,7 +72,7 @@ class TextEditTechnique(QTextEdit):
             super(TextEditTechnique, self).keyPressEvent(e)
             return
 
-        # ignore events funktion keys if popup().isVisible() --> popup behaves default
+        # ignore events funktion keys on Textedit if popup is visible --> popup behaves default
         if self._completer.popup().isVisible():
             if e.key() in (Qt.Key_Enter, Qt.Key_Return, Qt.Key_Escape, Qt.Key_Tab, Qt.Key_Backtab):
                 e.ignore()
@@ -84,17 +80,21 @@ class TextEditTechnique(QTextEdit):
 
         super(TextEditTechnique, self).keyPressEvent(e)
 
-        ctrlOrShift = e.modifiers() & (Qt.ControlModifier | Qt.ShiftModifier)
-        if self._completer is None or (ctrlOrShift and len(e.text()) == 0):
+        ctrl_or_shift = e.modifiers() & (Qt.ControlModifier | Qt.ShiftModifier)
+        if self._completer is None or (ctrl_or_shift and len(e.text()) == 0):
             return
 
-        has_modifier = (e.modifiers() != Qt.NoModifier) and not ctrlOrShift
-        completion_prefix = self.textUnderCursor()
+        # ignores shift and other modifier
+        has_modifier = (e.modifiers() != Qt.NoModifier) and not ctrl_or_shift
+        completion_prefix = self.text_under_cursor()
 
-        if (has_modifier or len(e.text()) == 0 or len(completion_prefix) < self.char_length or e.text()[-1] in self.eow):
+        # hide the popup for no chars
+        if (has_modifier or len(e.text()) == 0 or len(completion_prefix) < self.char_length
+                or e.text()[-1] in self.no_suggestion_input):
             self._completer.popup().hide()
             return
 
+        # shows the popup with the suggested words
         if completion_prefix != self._completer.completionPrefix():
             self._completer.setCompletionPrefix(completion_prefix)
             self._completer.popup().setCurrentIndex(self._completer.completionModel().index(0, 0))
@@ -110,3 +110,9 @@ class TextEditTechnique(QTextEdit):
 
     def clear_input(self):
         self.setHtml('')
+
+    def deactivate_completer(self):
+        self.isActive = False
+
+    def activate_completer(self):
+        self.isActive = True

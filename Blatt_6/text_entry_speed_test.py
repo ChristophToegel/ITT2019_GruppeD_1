@@ -46,7 +46,7 @@ class Logging():
             # sentence typed
             if last_input == '\n':
                 self.write_log_entry('sentence typed', last_input, current_word, text)#.replace('\n', ''))
-                self.typed_sentences+=text#.replace('\n', '')
+                self.typed_sentences+=text.replace('\n', '')
                 finished = True
 
         return finished
@@ -57,8 +57,8 @@ class Logging():
             'complete_text,current_complete_time')
 
     def write_log_entry(self, event_name, char, word, sentence):
-        #if char == '\n':
-        #    char = ' '
+        if char == '\n':
+            char = 'ENTER'
         time_word = self.timestamp - self.time_word
         time_sentence = self.timestamp - self.time_sentence
         time_complete = self.timestamp - self.time_complete
@@ -89,60 +89,42 @@ class Experiment(QWidget):
         self.logging = logging
         self.sentences = sentences
         self.current_task = 0
+        self.setup_elements()
 
-        # elements
+    def setup_elements(self):
         layout = QVBoxLayout()
         self.input_trigger.connect(self.log)
-        #self.edit = SuperText(self.input_trigger)
+        self.show_text = QTextEdit()
+        self.show_text.setReadOnly(True)
+        # self.show_text.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
-        self.input_text = QTextEdit()
-        self.input_text.setReadOnly(True)
-        # self.input_text.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-
-        self.comText = TextEditTechnique('text.txt',self.input_trigger)
-
+        self.input_text = TextEditTechnique('text.txt',self.input_trigger)
+        layout.addWidget(self.show_text)
         layout.addWidget(self.input_text)
-        #layout.addWidget(self.edit)
-        layout.addWidget(self.comText)
         self.setLayout(layout)
         self.show_next(True)
 
+    # logs the input
     def log(self, text, timestamp):
         finished_sentence = self.logging.loginput(text, timestamp)
         self.show_next(finished_sentence)
 
+    # shows next sentence
     def show_next(self, finished_sentence):
         if finished_sentence:
             if len(self.sentences) == self.current_task:
                 self.logging.finished_experiment()
                 exit()
             self.current_task += 1
-            self.input_text.setText(self.sentences[self.current_task - 1])
-            self.comText.clear_input()
-            #self.comText.deactivate_completer()
-            #self.edit.clear_input()
+            self.show_text.setText(self.sentences[self.current_task - 1])
+            self.input_text.clear_input()
+            #self.input_text.deactivate_completer()
+            #self.input_text.activate_completer()
 
-'''
-class SuperText(QTextEdit):
-
-    def __init__(self, input_trigger):
-        QLineEdit.__init__(self)
-        super(SuperText, self).__init__()
-        self.setHtml('')
-        self.input_trigger = input_trigger
-        self.textChanged.connect(self.handle_input)
-
-    def handle_input(self):
-        timestamp = time.time()
-        self.input_trigger.emit(self.toPlainText(), timestamp)
-
-    def clear_input(self):
-        self.setHtml('')
-'''
-
+# reads the senteces form file
 def read_text_form_file(filename):
     sentences=[]
-    file = open("text.txt")
+    file = open(filename)
     for line in file:
         sentences.append(line)
     file.close()
