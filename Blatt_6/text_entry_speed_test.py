@@ -20,7 +20,7 @@ class Logging():
         self.timestamp = 0
         self.last_word = ""
 
-    def loginput(self, text, timestamp, task_num):
+    def loginput(self, text, timestamp, task_num, technique_used):
         finished = False
         self.timestamp = timestamp
         if len(text) >= 1:
@@ -36,10 +36,6 @@ class Logging():
                 second_last_input = text[len(text) - 2]
                 if second_last_input.isspace():
                     self.time_word = timestamp
-
-            technique_used = False
-            if not last_input.isspace() and current_word != "" and len(current_word) >= 2 and self.last_word != current_word[:-1]:
-                technique_used = True
 
             # key pressed
             self.write_log_entry('key pressed', last_input, current_word, text, task_num, False)  # .replace('\n', ''), )
@@ -120,7 +116,7 @@ class Experiment(QWidget):
 
     # logs the input
     def log(self, text, timestamp):
-        finished_sentence = self.logging.loginput(text, timestamp, self.current_task)
+        finished_sentence = self.logging.loginput(text, timestamp, self.current_task, self.input_text.technique_used)
         self.show_next(finished_sentence)
 
     # shows next sentence

@@ -20,6 +20,7 @@ class TextEditTechnique(QTextEdit):
         self.textChanged.connect(self.handle_input)
         self.char_length = 1
         self.set_completer(word_list)
+        self.technique_used = False
         self.no_suggestion_input = "~!@#$%^&*()_+{}|:\"<>?,./;'[]\\-= "
 
     # gets words for suggestion
@@ -67,6 +68,8 @@ class TextEditTechnique(QTextEdit):
         super(TextEditTechnique, self).focusInEvent(e)
 
     def keyPressEvent(self, e):
+        #self.technique_used = False
+
         # behaves like a normal input field!
         if not self.isActive or self._completer is None:
             super(TextEditTechnique, self).keyPressEvent(e)
@@ -76,6 +79,7 @@ class TextEditTechnique(QTextEdit):
         if self._completer.popup().isVisible():
             if e.key() in (Qt.Key_Enter, Qt.Key_Return, Qt.Key_Escape, Qt.Key_Tab, Qt.Key_Backtab):
                 e.ignore()
+                self.technique_used = True
                 return
 
         super(TextEditTechnique, self).keyPressEvent(e)

@@ -1,31 +1,31 @@
 event_type,current_char,timestamp,current_word,current_word_time,current_sentence,current_sentence_time,complete_text,current_complete_time,sentence_num, technique_used
-key pressed,"S",1559734645.630516,"S",1559734645.630516,"S",0.0,"S",0.0,1,False
-key pressed,"u",1559734645.8479428,"Su",1559734645.8479428,"Su",0.21742677688598633,"Su",0.21742677688598633,1,False
-key pressed,"r",1559734646.540698,"Super",1559734646.540698,"Super",0.910181999206543,"Super",0.910181999206543,1,False
-key pressed,"SPACE",1559734646.937124,"Super",1559734646.937124,"Super ",1.306607961654663,"Super ",1.306607961654663,1,False
-word typed,"SPACE",1559734646.937124,"Super",1559734646.937124,"Super ",1.306607961654663,"Super ",1.306607961654663,1,False
-key pressed,"r",1559734647.376044,"Super",1559734647.376044,"Super",1.745527982711792,"Super",1.745527982711792,1,False
-key pressed,"SPACE",1559734647.856201,"Super",1559734647.856201,"Super ",2.225684881210327,"Super ",2.225684881210327,1,False
-word typed,"SPACE",1559734647.856201,"Super",1559734647.856201,"Super ",2.225684881210327,"Super ",2.225684881210327,1,False
-key pressed,"t",1559734648.022531,"t",0.0,"Super t",2.392014980316162,"Super t",2.392014980316162,1,False
-key pressed,"r",1559734648.63633,"toller",0.6137988567352295,"Super toller",3.0058138370513916,"Super toller",3.0058138370513916,1,False
-key pressed,"SPACE",1559734649.056511,"toller",1.033979892730713,"Super toller ",3.425994873046875,"Super toller ",3.425994873046875,1,False
-word typed,"SPACE",1559734649.056511,"toller",1.033979892730713,"Super toller ",3.425994873046875,"Super toller ",3.425994873046875,1,False
-key pressed,"e",1559734649.376333,"e",0.0,"Super toller e",3.745816946029663,"Super toller e",3.745816946029663,1,False
-key pressed,"r",1559734649.480208,"er",0.10387492179870605,"Super toller er",3.849691867828369,"Super toller er",3.849691867828369,1,False
-key pressed,"r",1559734649.796681,"erster",0.4203479290008545,"Super toller erster",4.166164875030518,"Super toller erster",4.166164875030518,1,False
-key pressed,"SPACE",1559734650.4164312,"erster",1.0400981903076172,"Super toller erster ",4.78591513633728,"Super toller erster ",4.78591513633728,1,False
-word typed,"SPACE",1559734650.4164312,"erster",1.0400981903076172,"Super toller erster ",4.78591513633728,"Super toller erster ",4.78591513633728,1,False
-key pressed,"S",1559734650.720313,"S",0.0,"Super toller erster S",5.089797019958496,"Super toller erster S",5.089797019958496,1,False
-key pressed,"a",1559734651.1204321,"Sa",0.4001190662384033,"Super toller erster Sa",5.489916086196899,"Super toller erster Sa",5.489916086196899,1,False
-key pressed,"z",1559734651.5967748,"Satz",0.8764617443084717,"Super toller erster Satz",5.966258764266968,"Super toller erster Satz",5.966258764266968,1,False
-key pressed,".",1559734652.9368079,"Satz.",2.2164947986602783,"Super toller erster Satz.",7.306291818618774,"Super toller erster Satz.",7.306291818618774,1,False
-key pressed,"ENTER",1559734653.2405682,"Satz.",2.5202550888061523,"Super toller erster Satz.
-",7.610052108764648,"Super toller erster Satz.
-",7.610052108764648,1,False
-word typed,"ENTER",1559734653.2405682,"Satz.",2.5202550888061523,"Super toller erster Satz.
-",7.610052108764648,"Super toller erster Satz.
-",7.610052108764648,1,False
-sentence typed,"ENTER",1559734653.2405682,"Satz.",2.5202550888061523,"Super toller erster Satz.
-",7.610052108764648,"Super toller erster Satz.
-",7.610052108764648,1,False
+key pressed,"S",1559736413.018102,"S",1559736413.018102,"S",0.0,"S",0.0,1,False
+key pressed,"u",1559736413.1878028,"Su",1559736413.1878028,"Su",0.16970086097717285,"Su",0.16970086097717285,1,False
+key pressed,"p",1559736413.395828,"Sup",1559736413.395828,"Sup",0.37772607803344727,"Sup",0.37772607803344727,1,False
+key pressed,"e",1559736413.547554,"Supe",1559736413.547554,"Supe",0.5294520854949951,"Supe",0.5294520854949951,1,False
+key pressed,"r",1559736413.635575,"Super",1559736413.635575,"Super",0.6174731254577637,"Super",0.6174731254577637,1,False
+key pressed,"SPACE",1559736413.803875,"Super",1559736413.803875,"Super ",0.7857730388641357,"Super ",0.7857730388641357,1,False
+word typed,"SPACE",1559736413.803875,"Super",1559736413.803875,"Super ",0.7857730388641357,"Super ",0.7857730388641357,1,False
+key pressed,"t",1559736414.212032,"t",0.0,"Super t",1.1939301490783691,"Super t",1.1939301490783691,1,False
+key pressed,"r",1559736414.896538,"toller",0.6845059394836426,"Super toller",1.8784360885620117,"Super toller",1.8784360885620117,1,False
+key pressed,"SPACE",1559736415.5798569,"toller",1.3678247928619385,"Super toller ",2.5617549419403076,"Super toller ",2.5617549419403076,1,False
+word typed,"SPACE",1559736415.5798569,"toller",1.3678247928619385,"Super toller ",2.5617549419403076,"Super toller ",2.5617549419403076,1,True
+key pressed,"e",1559736415.835619,"e",0.0,"Super toller e",2.817517042160034,"Super toller e",2.817517042160034,1,False
+key pressed,"r",1559736415.9633222,"er",0.12770318984985352,"Super toller er",2.9452202320098877,"Super toller er",2.9452202320098877,1,False
+key pressed,"r",1559736416.335569,"erster",0.49994993209838867,"Super toller erster",3.317466974258423,"Super toller erster",3.317466974258423,1,False
+key pressed,"SPACE",1559736416.675807,"erster",0.8401880264282227,"Super toller erster ",3.657705068588257,"Super toller erster ",3.657705068588257,1,False
+word typed,"SPACE",1559736416.675807,"erster",0.8401880264282227,"Super toller erster ",3.657705068588257,"Super toller erster ",3.657705068588257,1,True
+key pressed,"S",1559736417.123918,"S",0.0,"Super toller erster S",4.105816125869751,"Super toller erster S",4.105816125869751,1,False
+key pressed,"a",1559736417.572109,"Sa",0.44819092750549316,"Super toller erster Sa",4.554007053375244,"Super toller erster Sa",4.554007053375244,1,False
+key pressed,"t",1559736417.867553,"Sat",0.7436349391937256,"Super toller erster Sat",4.849451065063477,"Super toller erster Sat",4.849451065063477,1,False
+key pressed,"z",1559736418.0599942,"Satz",0.9360761642456055,"Super toller erster Satz",5.0418922901153564,"Super toller erster Satz",5.0418922901153564,1,False
+key pressed,".",1559736418.307889,"Satz.",1.1839709281921387,"Super toller erster Satz.",5.28978705406189,"Super toller erster Satz.",5.28978705406189,1,False
+key pressed,"ENTER",1559736418.6368089,"Satz.",1.5128908157348633,"Super toller erster Satz.
+",5.618706941604614,"Super toller erster Satz.
+",5.618706941604614,1,False
+word typed,"ENTER",1559736418.6368089,"Satz.",1.5128908157348633,"Super toller erster Satz.
+",5.618706941604614,"Super toller erster Satz.
+",5.618706941604614,1,True
+sentence typed,"ENTER",1559736418.6368089,"Satz.",1.5128908157348633,"Super toller erster Satz.
+",5.618706941604614,"Super toller erster Satz.
+",5.618706941604614,1,False
