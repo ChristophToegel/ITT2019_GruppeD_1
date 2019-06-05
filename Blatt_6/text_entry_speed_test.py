@@ -27,6 +27,7 @@ class Logging():
         self.participant_id = participant_id
         self.completion = completion
 
+    # interprets the pressed events
     def loginput(self, text, timestamp, task_num, technique_used):
         finished = False
         reset_technique = False
