@@ -3,6 +3,7 @@ import sys
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QApplication, QWidget, QTextEdit, QVBoxLayout
 from text_input_technique import TextEditTechnique
+import random
 
 '''
 Workload distribution among team:
@@ -15,7 +16,7 @@ Workload distribution among team:
 
 class Logging():
 
-    def __init__(self):
+    def __init__(self, participant_id):
         self.time_sentence = 0
         self.time_word = 0
         self.time_complete = 0
@@ -23,6 +24,7 @@ class Logging():
         self.write_header()
         self.timestamp = 0
         self.last_word = ""
+        self.participant_id = participant_id
 
     def loginput(self, text, timestamp, task_num, technique_used):
         finished = False
@@ -68,7 +70,7 @@ class Logging():
     def write_header(self):
         print(
             'event_type,current_char,timestamp,current_word,current_word_time,current_sentence,current_sentence_time,'
-            'complete_text,current_complete_time,sentence_num, technique_used')
+            'complete_text,current_complete_time,sentence_num,technique_used,participant_id')
 
     def write_log_entry(self, event_name, char, word, sentence, task_num, technique_used):
         if char == '\n':
@@ -87,6 +89,7 @@ class Logging():
         log_string += ',"' + str(sentence) + '",' + str(time_sentence)
         log_string += ',"' + str(text) + '",' + str(time_complete)
         log_string += ',' + str(task_num) + ',' + str(technique_used)
+        log_string += ',' + str(self.participant_id)
         print(log_string)
 
         self.last_char = char
@@ -99,7 +102,7 @@ class Experiment(QWidget):
     # trigger for changed input
     input_trigger = QtCore.pyqtSignal(str, float)
 
-    def __init__(self, logging, sentences):
+    def __init__(self, logging, sentences, filename):
         super(QWidget, self).__init__()
         self.screen_width = 700
         self.screen_height = 400
@@ -111,16 +114,16 @@ class Experiment(QWidget):
         self.logging = logging
         self.sentences = sentences
         self.current_task = 0
-        self.setup_elements()
+        self.setup_elements(filename)
 
     # sets up the layout with the elements
-    def setup_elements(self):
+    def setup_elements(self, filename):
         layout = QVBoxLayout()
         self.input_trigger.connect(self.log)
         self.show_text = QTextEdit()
         self.show_text.setReadOnly(True)
 
-        self.input_text = TextEditTechnique('text.txt', self.input_trigger)
+        self.input_text = TextEditTechnique(filename, self.input_trigger)
         layout.addWidget(self.show_text)
         layout.addWidget(self.input_text)
         self.setLayout(layout)
@@ -152,16 +155,18 @@ def read_text_form_file(filename):
     for line in file:
         sentences.append(line)
     file.close()
+    random.shuffle(sentences)
     return sentences
 
 
 # starts the application
 def main():
     app = QApplication(sys.argv)
-    sentences = read_text_form_file('text.txt')
-    logging = Logging()
+    filename = 'text.txt'
+    sentences = read_text_form_file(filename)
+    logging = Logging(participant_id=1)
     # widget is magic
-    widget = Experiment(logging, sentences)
+    widget = Experiment(logging, sentences, filename)
     sys.exit(app.exec_())
 
 
