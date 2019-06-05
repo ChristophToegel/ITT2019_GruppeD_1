@@ -16,7 +16,7 @@ Workload distribution among team:
 
 class Logging():
 
-    def __init__(self, participant_id):
+    def __init__(self, participant_id, completion):
         self.time_sentence = 0
         self.time_word = 0
         self.time_complete = 0
@@ -25,6 +25,7 @@ class Logging():
         self.timestamp = 0
         self.last_word = ""
         self.participant_id = participant_id
+        self.completion = completion
 
     def loginput(self, text, timestamp, task_num, technique_used):
         finished = False
@@ -47,19 +48,16 @@ class Logging():
 
             # key pressed
             if not technique_used or last_input == ' ':
-                self.write_log_entry('key pressed', last_input, current_word, text, task_num,
-                                     "none")  # .replace('\n', ''), )
+                self.write_log_entry('key pressed', last_input, current_word, text, task_num, "none")
 
             # word typed
             if last_input.isspace() or last_input == '\n':
-                self.write_log_entry('word typed', last_input, current_word, text, task_num,
-                                     technique_used)  # .replace('\n', ''))
+                self.write_log_entry('word typed', last_input, current_word, text, task_num, technique_used)
                 reset_technique = True
 
             # sentence typed
             if last_input == '\n' and second_last_input == ".":
-                self.write_log_entry('sentence typed', last_input, current_word, text, task_num,
-                                     "none")  # .replace('\n', ''))
+                self.write_log_entry('sentence typed', last_input, current_word, text, task_num, "none")
                 self.typed_sentences += text.replace('\n', '')
                 finished = True
 
@@ -70,7 +68,7 @@ class Logging():
     def write_header(self):
         print(
             'event_type,current_char,timestamp,current_word,current_word_time,current_sentence,current_sentence_time,'
-            'complete_text,current_complete_time,sentence_num,technique_used,participant_id')
+            'complete_text,current_complete_time,sentence_num,technique_used,autocompletion,participant_id')
 
     def write_log_entry(self, event_name, char, word, sentence, task_num, technique_used):
         if char == '\n':
@@ -89,7 +87,7 @@ class Logging():
         log_string += ',"' + str(sentence) + '",' + str(time_sentence)
         log_string += ',"' + str(text) + '",' + str(time_complete)
         log_string += ',' + str(task_num) + ',' + str(technique_used)
-        log_string += ',' + str(self.participant_id)
+        log_string += ',' + str(self.completion) + ',' + str(self.participant_id)
         print(log_string)
 
         self.last_char = char
@@ -123,7 +121,7 @@ class Experiment(QWidget):
         self.show_text = QTextEdit()
         self.show_text.setReadOnly(True)
 
-        self.input_text = TextEditTechnique(filename, self.input_trigger)
+        self.input_text = TextEditTechnique(filename, self.input_trigger, self.logging.completion)
         layout.addWidget(self.show_text)
         layout.addWidget(self.input_text)
         self.setLayout(layout)
@@ -163,8 +161,10 @@ def read_text_form_file(filename):
 def main():
     app = QApplication(sys.argv)
     filename = 'text.txt'
+    completion = True
+    participant_id = 1
     sentences = read_text_form_file(filename)
-    logging = Logging(participant_id=4)
+    logging = Logging(participant_id, completion)
     # widget is magic
     widget = Experiment(logging, sentences, filename)
     sys.exit(app.exec_())
