@@ -4,7 +4,7 @@ import time
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QApplication, QWidget, QTextEdit, QVBoxLayout, QCompleter, QLineEdit
-from text_input_technique import TextEditCom
+from text_input_technique import TextEditTechnique
 
 
 # https://doc.qt.io/qt-5/qtextedit.html
@@ -93,17 +93,17 @@ class Experiment(QWidget):
         # elements
         layout = QVBoxLayout()
         self.input_trigger.connect(self.log)
-        self.edit = SuperText(self.input_trigger)
+        #self.edit = SuperText(self.input_trigger)
 
         self.input_text = QTextEdit()
         self.input_text.setReadOnly(True)
         # self.input_text.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
-        comText = TextEditCom('text.txt')
+        self.comText = TextEditTechnique('text.txt',self.input_trigger)
 
         layout.addWidget(self.input_text)
-        layout.addWidget(self.edit)
-        layout.addWidget(comText)
+        #layout.addWidget(self.edit)
+        layout.addWidget(self.comText)
         self.setLayout(layout)
         self.show_next(True)
 
@@ -118,9 +118,11 @@ class Experiment(QWidget):
                 exit()
             self.current_task += 1
             self.input_text.setText(self.sentences[self.current_task - 1])
-            self.edit.clear_input()
+            self.comText.clear_input()
+            #self.comText.deactivate_completer()
+            #self.edit.clear_input()
 
-
+'''
 class SuperText(QTextEdit):
 
     def __init__(self, input_trigger):
@@ -136,7 +138,7 @@ class SuperText(QTextEdit):
 
     def clear_input(self):
         self.setHtml('')
-
+'''
 
 def read_text_form_file(filename):
     sentences=[]
