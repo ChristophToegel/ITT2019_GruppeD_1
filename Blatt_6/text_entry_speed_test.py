@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 import sys
-import time
-from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QApplication, QWidget, QTextEdit, QVBoxLayout, QCompleter, QLineEdit
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QWidget, QTextEdit, QVBoxLayout
 from text_input_technique import TextEditTechnique
+
+'''
+Workload distribution among team:
+    Christoph: Logging(class), main(method)
+    Julian: Experiment(class), read_text_form_file(method)
+'''
 
 
 # https://doc.qt.io/qt-5/qtextedit.html
@@ -22,6 +26,7 @@ class Logging():
 
     def loginput(self, text, timestamp, task_num, technique_used):
         finished = False
+        reset_technique = False
         self.timestamp = timestamp
         if len(text) >= 1:
             last_input = text[len(text) - 1]
@@ -30,6 +35,7 @@ class Logging():
 
             if len(text) == 1:
                 self.time_sentence = timestamp
+                self.time_word = timestamp
                 if self.typed_sentences == "":
                     self.time_complete = timestamp
             elif len(text) >= 2:
@@ -38,21 +44,26 @@ class Logging():
                     self.time_word = timestamp
 
             # key pressed
-            self.write_log_entry('key pressed', last_input, current_word, text, task_num, "none")  # .replace('\n', ''), )
+            if not technique_used or last_input == ' ':
+                self.write_log_entry('key pressed', last_input, current_word, text, task_num,
+                                     "none")  # .replace('\n', ''), )
 
             # word typed
             if last_input.isspace() or last_input == '\n':
-                self.write_log_entry('word typed', last_input, current_word, text, task_num, technique_used)  # .replace('\n', ''))
+                self.write_log_entry('word typed', last_input, current_word, text, task_num,
+                                     technique_used)  # .replace('\n', ''))
+                reset_technique = True
 
             # sentence typed
             if last_input == '\n' and second_last_input == ".":
-                self.write_log_entry('sentence typed', last_input, current_word, text, task_num, "none")  # .replace('\n', ''))
+                self.write_log_entry('sentence typed', last_input, current_word, text, task_num,
+                                     "none")  # .replace('\n', ''))
                 self.typed_sentences += text.replace('\n', '')
                 finished = True
 
             self.last_word = current_word
 
-        return finished
+        return finished, reset_technique
 
     def write_header(self):
         print(
@@ -85,6 +96,7 @@ class Logging():
 
 
 class Experiment(QWidget):
+    # trigger for changed input
     input_trigger = QtCore.pyqtSignal(str, float)
 
     def __init__(self, logging, sentences):
@@ -101,12 +113,12 @@ class Experiment(QWidget):
         self.current_task = 0
         self.setup_elements()
 
+    # sets up the layout with the elements
     def setup_elements(self):
         layout = QVBoxLayout()
         self.input_trigger.connect(self.log)
         self.show_text = QTextEdit()
         self.show_text.setReadOnly(True)
-        # self.show_text.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
         self.input_text = TextEditTechnique('text.txt', self.input_trigger)
         layout.addWidget(self.show_text)
@@ -116,11 +128,14 @@ class Experiment(QWidget):
 
     # logs the input
     def log(self, text, timestamp):
-        finished_sentence = self.logging.loginput(text, timestamp, self.current_task, self.input_text.technique_used)
+        finished_sentence, reset_technique = self.logging.loginput(text, timestamp, self.current_task,
+                                                                   self.input_text.technique_used)
+        if reset_technique:
+            self.input_text.technique_used = False
         self.show_next(finished_sentence)
 
-    # shows next sentence
-    def show_next(self, finished_sentence):
+    # shows next sentence, exits the application if done
+    def show_next(self, finished_sentence, reset_technique=False):
         if finished_sentence:
             if len(self.sentences) == self.current_task:
                 self.logging.finished_experiment()
@@ -128,8 +143,6 @@ class Experiment(QWidget):
             self.current_task += 1
             self.show_text.setText(self.sentences[self.current_task - 1])
             self.input_text.clear_input()
-            # self.input_text.deactivate_completer()
-            # self.input_text.activate_completer()
 
 
 # reads the senteces form file
@@ -142,6 +155,7 @@ def read_text_form_file(filename):
     return sentences
 
 
+# starts the application
 def main():
     app = QApplication(sys.argv)
     sentences = read_text_form_file('text.txt')

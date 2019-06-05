@@ -1,7 +1,13 @@
-from PyQt5.QtCore import Qt, QStringListModel
-from PyQt5.QtGui import QKeySequence, QTextCursor
-from PyQt5.QtWidgets import QLineEdit, QCompleter, QTextEdit, QDirModel
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWidgets import QCompleter, QTextEdit
 import time
+
+'''
+Workload distribution among team:
+    Christoph: get_suggestion_words, set_completer, deactivate_completer,activate_completer
+    Julian: insert_sel_suggestion,text_under_cursor,focusInEvent,keyPressEvent,clear_input,handle_input
+'''
 
 
 # https://stackoverflow.com/questions/28956693/pyqt5-qtextedit-auto-completion
@@ -11,12 +17,14 @@ import time
 # https://www.programcreek.com/python/example/108066/PyQt5.QtWidgets.QCompleter
 
 class TextEditTechnique(QTextEdit):
+
     def __init__(self, text_file, input_trigger=None, active=True):
         super(TextEditTechnique, self).__init__()
         self._completer = None
         self.isActive = active
         word_list = self.get_suggestion_words(text_file)
         self.input_trigger = input_trigger
+        # connects the text textChanged event
         self.textChanged.connect(self.handle_input)
         self.char_length = 1
         self.set_completer(word_list)
@@ -57,18 +65,19 @@ class TextEditTechnique(QTextEdit):
         text_cursor.insertText(suggestion[-extra:])
         self.setTextCursor(text_cursor)
 
+    # returns the current typed word
     def text_under_cursor(self):
         text_cursor = self.textCursor()
         text_cursor.select(QTextCursor.WordUnderCursor)
         return text_cursor.selectedText()
 
+    # sets the widget
     def focusInEvent(self, e):
         if self._completer is not None and self.isActive:
             self._completer.setWidget(self)
         super(TextEditTechnique, self).focusInEvent(e)
 
     def keyPressEvent(self, e):
-        #self.technique_used = False
 
         # behaves like a normal input field!
         if not self.isActive or self._completer is None:
@@ -81,18 +90,16 @@ class TextEditTechnique(QTextEdit):
                 e.ignore()
                 self.technique_used = True
                 return
-
+        # wirtes text in the editfield
         super(TextEditTechnique, self).keyPressEvent(e)
 
         ctrl_or_shift = e.modifiers() & (Qt.ControlModifier | Qt.ShiftModifier)
         if self._completer is None or (ctrl_or_shift and len(e.text()) == 0):
             return
 
-        # ignores shift and other modifier
         has_modifier = (e.modifiers() != Qt.NoModifier) and not ctrl_or_shift
         completion_prefix = self.text_under_cursor()
-
-        # hide the popup for no chars
+        # hide the popup for no chars, modifiers, shift and no text
         if (has_modifier or len(e.text()) == 0 or len(completion_prefix) < self.char_length
                 or e.text()[-1] in self.no_suggestion_input):
             self._completer.popup().hide()
@@ -108,15 +115,19 @@ class TextEditTechnique(QTextEdit):
             0) + self._completer.popup().verticalScrollBar().sizeHint().width())
         self._completer.complete(cursor)
 
+    # event called if textedit input has changed
     def handle_input(self):
         timestamp = time.time()
         self.input_trigger.emit(self.toPlainText(), timestamp)
 
+    # clears the text input
     def clear_input(self):
         self.setHtml('')
 
+    # deactivates the completer
     def deactivate_completer(self):
         self.isActive = False
 
+    # activates the completer
     def activate_completer(self):
         self.isActive = True
