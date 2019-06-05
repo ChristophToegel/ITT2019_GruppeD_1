@@ -164,7 +164,7 @@ def main():
     app = QApplication(sys.argv)
     filename = 'text.txt'
     sentences = read_text_form_file(filename)
-    logging = Logging(participant_id=1)
+    logging = Logging(participant_id=4)
     # widget is magic
     widget = Experiment(logging, sentences, filename)
     sys.exit(app.exec_())
