@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QTextCursor
 from PyQt5.QtWidgets import QCompleter, QTextEdit
@@ -37,7 +38,7 @@ class TextEditTechnique(QTextEdit):
         file = open(text_file)
         for line in file:
             for word in line.split(' '):
-                word = word.strip().lower().replace('.', '').replace(',', '').replace('.', '').replace('?', '')
+                word = word.strip().lower().replace('.', '').replace(',', '').replace(':', '').replace('?', '')
                 if word and word not in words:
                     words.append(word)
         file.close()
@@ -90,7 +91,7 @@ class TextEditTechnique(QTextEdit):
                 e.ignore()
                 self.technique_used = True
                 return
-        # wirtes text in the editfield
+        # writes text in the editfield
         super(TextEditTechnique, self).keyPressEvent(e)
 
         ctrl_or_shift = e.modifiers() & (Qt.ControlModifier | Qt.ShiftModifier)
