@@ -38,7 +38,7 @@ class Logging():
                     self.time_word = timestamp
 
             # key pressed
-            self.write_log_entry('key pressed', last_input, current_word, text, task_num, False)  # .replace('\n', ''), )
+            self.write_log_entry('key pressed', last_input, current_word, text, task_num, "none")  # .replace('\n', ''), )
 
             # word typed
             if last_input.isspace() or last_input == '\n':
@@ -46,7 +46,7 @@ class Logging():
 
             # sentence typed
             if last_input == '\n' and second_last_input == ".":
-                self.write_log_entry('sentence typed', last_input, current_word, text, task_num, False)  # .replace('\n', ''))
+                self.write_log_entry('sentence typed', last_input, current_word, text, task_num, "none")  # .replace('\n', ''))
                 self.typed_sentences += text.replace('\n', '')
                 finished = True
 
